@@ -8,9 +8,6 @@ Daarna heb je een script `paqu.sh` waarmee je PaQu kunt starten.
 
 * * * * *
 
-Bronbestanden voor Docker image:
-https://github.com/rug-compling/paqu-docker-src
-
 Over PaQu zelf, zie:
 https://github.com/rug-compling/paqu
 

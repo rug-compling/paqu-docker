@@ -392,14 +392,14 @@ case "$1" in
 	    -p $port:9000 \
 	    -v $dir:/mod/data \
 	    -u $user \
-	    pebbe/paqu:latest serve
+	    rugcompling/paqu:latest serve
 	;;
     status|rmcorpus|rmuser)
 	docker run \
 	    --rm \
 	    --net=$net \
 	    -v $dir:/mod/data \
-	    pebbe/paqu:latest $*
+	    rugcompling/paqu:latest $*
 	;;
     shell)
 	docker run \
@@ -407,7 +407,7 @@ case "$1" in
 	    --net=$net \
 	    -i -t \
 	    -v $dir:/mod/data \
-	    pebbe/paqu:latest shell
+	    rugcompling/paqu:latest shell
 	;;
     *)
 	echo
