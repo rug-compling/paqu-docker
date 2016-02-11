@@ -383,6 +383,34 @@ then
 fi
 
 case "$1" in
+    install_lassy)
+	if [ ! -f $dir/corpora/lassy.dact ]
+	then
+	    echo
+	    echo Corpusbestand niet gevonden.
+	    echo
+	    echo Je kunt het corpus Lassy Klein verkrijgen bij de TST-Central:
+	    echo http://tst-centrale.org/producten/corpora/lassy-klein-corpus/6-66
+	    echo
+	    echo Plaats het bestand lassy.dact in de directory $dir/corpora/
+	    echo en draai dit commando opnieuw.
+	    echo
+	    echo LET OP: Laat het bestand lassy.dact na het installeren staan.
+	    echo PaQu blijft dit bestand gebruiken.
+	    echo
+	    exit
+	fi
+	docker run \
+	    --rm \
+	    --net=$net \
+	    -v $dir:/mod/data \
+	    rugcompling/paqu:latest install_lassy
+	echo
+	echo TIP: Je kunt van Lassy Klein het default-cropus maken door in
+	echo het bestand $dir/setup.toml de waarde
+	echo van \'default\' te veranderen in '"lassysmall"'
+	echo
+	;;
     serve)
 	docker rm paqu.serve &> /dev/null 
 	docker run \
@@ -393,13 +421,6 @@ case "$1" in
 	    -v $dir:/mod/data \
 	    -u $user \
 	    rugcompling/paqu:latest serve
-	;;
-    status|rmcorpus|rmuser)
-	docker run \
-	    --rm \
-	    --net=$net \
-	    -v $dir:/mod/data \
-	    rugcompling/paqu:latest $*
 	;;
     shell)
 	docker run \
@@ -416,6 +437,7 @@ case "$1" in
 	echo CMD is een van:
 	echo
 	echo "  serve          - start de PaQu-server"
+	echo "  install_lassy  - installeer het corpus Lassy Klein als globaal corpus"
 	echo "  status         - geef overzicht van gebruikers en hun corpora"
 	echo "  rmuser user    - verwijder gebruiker 'user' en al z'n corpora"
 	echo "  rmcorpus corp  - verwijder corpus 'corp'"
