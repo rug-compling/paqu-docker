@@ -34,8 +34,9 @@ then
 	if [ "`echo $DATA/*`" != "$DATA/"'*' ]
 	then
 	    echo De directory $DATA is niet leeg
+	    echo Als je echt deze directory wilt gebruiken, doe dan: touch $DATA/setup.toml
 	    echo Setup afgebroken
-	    exit	
+	    exit
 	fi
     fi
 else
@@ -55,51 +56,75 @@ fi
 mkdir -p $DATA/data
 
 echo
-echo Server waarop MySQL draait.
-echo Laat dit leeg als MySQL op de locale machine draait.
-echo Voorbeeld: mysql.paqu.nl
-read -p "Server: " SERVER
+echo Hoe wil je MySQL gebruiken?
+echo ' d - MySQL in Docker (eenvoudig)'
+echo ' s - Een reguliere server (je hebt een account voor MySQL nodig)'
+read -p "MySQL: (d/s) " MSS
+case $MSS in
+    [dD]*)
+	SQLDOCKER=1
+	;;
+    [sS]*)
+	SQLDOCKER=0
+	;;
+    *)
+	echo Setup afgebroken
+	exit
+	;;
+esac
 
-echo
-echo Inlognaam voor MySQL.
-echo Voorbeeld: paqu
-read -p "Inlognaam: " USER
-if [ "$USER" = "" ]
+if [ $SQLDOCKER = 1 ]
 then
-    echo Inlognaam ontbreekt
-    echo Setup afgebroken
-    exit
-fi
-
-echo
-echo Wachtwoord van gebruiker \"$USER\" voor MySQL.
-echo Voorbeeld: paqu
-read -p "Wachtwoord: " PASS
-if [ "$PASS" = "" ]
-then
-    echo Wachtwoord ontbreekt
-    echo Setup afgebroken
-    exit
-fi
-
-echo
-echo Database voor PaQu van gebruiker \"$USER\" voor MySQL.
-echo Voorbeeld: paqu
-read -p "Database: " DB
-if [ "$DB" = "" ]
-then
-    echo Database ontbreekt
-    echo Setup afgebroken
-    exit
-fi
-
-if [ "$SERVER" = "" -o "$SERVER" = "localhost" -o "$SERVER" = "127.0.0.1" ]
-then
-    LOGIN="$USER:$PASS@/$DB"
-    NET=host
-else
-    LOGIN="$USER:$PASS@tcp($SERVER)/$DB"
+    LOGIN='$LOGIN'
     NET=default
+else
+    echo
+    echo Server waarop MySQL draait.
+    echo Laat dit leeg als MySQL op de locale machine draait.
+    echo Voorbeeld: mysql.paqu.nl
+    read -p "Server: " SERVER
+
+    echo
+    echo Inlognaam voor MySQL.
+    echo Voorbeeld: paqu
+    read -p "Inlognaam: " USER
+    if [ "$USER" = "" ]
+    then
+	echo Inlognaam ontbreekt
+	echo Setup afgebroken
+	exit
+    fi
+
+    echo
+    echo Wachtwoord van gebruiker \"$USER\" voor MySQL.
+    echo Voorbeeld: paqu
+    read -p "Wachtwoord: " PASS
+    if [ "$PASS" = "" ]
+    then
+	echo Wachtwoord ontbreekt
+	echo Setup afgebroken
+	exit
+    fi
+
+    echo
+    echo Database voor PaQu van gebruiker \"$USER\" voor MySQL.
+    echo Voorbeeld: paqu
+    read -p "Database: " DB
+    if [ "$DB" = "" ]
+    then
+	echo Database ontbreekt
+	echo Setup afgebroken
+	exit
+    fi
+
+    if [ "$SERVER" = "" -o "$SERVER" = "localhost" -o "$SERVER" = "127.0.0.1" ]
+    then
+	LOGIN="$USER:$PASS@/$DB"
+	NET=host
+    else
+	LOGIN="$USER:$PASS@tcp($SERVER)/$DB"
+	NET=default
+    fi
 fi
 
 echo
@@ -366,7 +391,6 @@ echo port=$PORT >> paqu.sh
 echo net=$NET >> paqu.sh
 
 cat >> paqu.sh  <<'EOF'
-user=`ls -ln $dir/setup.toml | awk '{ print $3 ":" $4 }'`
 
 if [ ! -e "$dir/setup.toml" ]
 then
@@ -387,6 +411,29 @@ then
 fi
 
 case "$1" in
+EOF
+if [ $SQLDOCKER = 1 ]
+then
+    cat >> paqu.sh  <<'EOF'
+    start)
+	docker rm mysql.paqu &> /dev/null
+	docker run \
+	    -d \
+	    --name=mysql.paqu \
+	    -v $dir/mysql:/var/lib/mysql \
+	    -e MYSQL_ROOT_PASSWORD=root \
+	    -e MYSQL_DATABASE=paqu \
+	    -e MYSQL_USER=paqu \
+	    -e MYSQL_PASSWORD=paqu \
+	    mysql:5.5
+	;;
+    stop)
+	docker stop mysql.paqu
+	docker rm mysql.paqu
+	;;
+EOF
+fi
+cat >> paqu.sh  <<'EOF'
     install_lassy)
 	if [ ! -f $dir/corpora/lassy.dact ]
 	then
@@ -405,6 +452,12 @@ case "$1" in
 	    exit
 	fi
 	docker run \
+EOF
+if [ $SQLDOCKER = 1 ]
+then
+    echo '	    --link mysql.paqu:mysql \' >> paqu.sh
+fi
+cat >> paqu.sh  <<'EOF'
 	    --rm \
 	    --net=$net \
 	    -v $dir:/mod/data \
@@ -416,18 +469,29 @@ case "$1" in
 	echo
 	;;
     serve|pqserve)
-	docker rm paqu.serve &> /dev/null 
+	docker rm paqu.serve &> /dev/null
 	docker run \
+EOF
+if [ $SQLDOCKER = 1 ]
+then
+    echo '	    --link mysql.paqu:mysql \' >> paqu.sh
+fi
+cat >> paqu.sh  <<'EOF'
 	    --name=paqu.serve \
 	    --net=$net \
 	    -i -t \
 	    -p $port:9000 \
 	    -v $dir:/mod/data \
-	    -u $user \
 	    rugcompling/paqu:latest serve
 	;;
     status|pqstatus|rmcorpus|pqrmcorpus|rmuser|pqrmuser)
 	docker run \
+EOF
+if [ $SQLDOCKER = 1 ]
+then
+    echo '	    --link mysql.paqu:mysql \' >> paqu.sh
+fi
+cat >> paqu.sh  <<'EOF'
 	    --rm \
 	    --net=$net \
 	    -v $dir:/mod/data \
@@ -435,6 +499,12 @@ case "$1" in
 	;;
     shell)
 	docker run \
+EOF
+if [ $SQLDOCKER = 1 ]
+then
+    echo '	    --link mysql.paqu:mysql \' >> paqu.sh
+fi
+cat >> paqu.sh  <<'EOF'
 	    --rm \
 	    --net=$net \
 	    -i -t \
@@ -447,11 +517,23 @@ case "$1" in
 	echo
 	echo CMD is een van:
 	echo
+EOF
+if [ $SQLDOCKER = 1 ]
+then
+    cat >> paqu.sh  <<'EOF'
+	echo "  start          - start MySQL"
+	echo "  stop           - stop MySQL"
+	echo
+EOF
+fi
+cat >> paqu.sh  <<'EOF'
 	echo "  serve          - start de PaQu-server"
+	echo
 	echo "  install_lassy  - installeer het corpus Lassy Klein als globaal corpus"
 	echo "  status         - geef overzicht van gebruikers en hun corpora"
 	echo "  rmuser user    - verwijder gebruiker 'user' en al z'n corpora"
 	echo "  rmcorpus corp  - verwijder corpus 'corp'"
+	echo
 	echo "  shell          - open een interactieve shell"
 	echo
 	;;
