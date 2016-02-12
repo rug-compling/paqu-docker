@@ -199,6 +199,10 @@ $smtppass =~ s/\\/\\\\/g;
 $smtppass =~ s/\"/\\\"/g;
 $login    =~ s/\\/\\\\/g;
 $login    =~ s/\"/\\\"/g;
+
+$login    =~ s!\@tcp\(([^):]+)\)/!\@tcp($1:3306)/!;
+$smtpserv =~ s/^[^:]+$/$&:25/;
+
 while (<>) {
     s/~CONTACT~/"$contact"/e;
     s/~URL~/"$url"/e;
@@ -341,7 +345,7 @@ url = "~URL~"
 port = 9000
 default = "alpinotreebank"
 mailfrom = "~MAILFROM~"
-smtpserv = "~SMTPSERV~:25"
+smtpserv = "~SMTPSERV~"
 smtpuser = "~SMTPUSER~"
 smtppass = "~SMTPPASS~"
 login = "~LOGIN~"
@@ -411,7 +415,7 @@ case "$1" in
 	echo van \'default\' te veranderen in '"lassysmall"'
 	echo
 	;;
-    serve)
+    serve|pqserve)
 	docker rm paqu.serve &> /dev/null 
 	docker run \
 	    --name=paqu.serve \
@@ -421,6 +425,13 @@ case "$1" in
 	    -v $dir:/mod/data \
 	    -u $user \
 	    rugcompling/paqu:latest serve
+	;;
+    status|pqstatus|rmcorpus|pqrmcorpus|rmuser|pqrmuser)
+	docker run \
+	    --rm \
+	    --net=$net \
+	    -v $dir:/mod/data \
+	    rugcompling/paqu:latest $*
 	;;
     shell)
 	docker run \
