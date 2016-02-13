@@ -377,7 +377,7 @@ login = "~LOGIN~"
 prefix = "pq"
 dact = true
 sh = "/bin/sh"
-path = "/mod/paqu/bin:/mod/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+path = "/mod/paqu/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 alpino = "/mod/Alpino"
 alpino15 = true
 remote = false
@@ -411,12 +411,15 @@ then
 fi
 
 case "$1" in
+    start)
+	docker rm paqu.serve &> /dev/null
+
 EOF
 if [ $SQLDOCKER = 1 ]
 then
-    cat >> paqu.sh  <<'EOF'
-    start)
+   cat >> paqu.sh  <<'EOF'
 	docker rm mysql.paqu &> /dev/null
+	echo MySQL wordt gestart
 	docker run \
 	    -d \
 	    --name=mysql.paqu \
@@ -425,15 +428,55 @@ then
 	    -e MYSQL_DATABASE=paqu \
 	    -e MYSQL_USER=paqu \
 	    -e MYSQL_PASSWORD=paqu \
-	    mysql:5.5
-	;;
-    stop)
-	docker stop mysql.paqu
-	docker rm mysql.paqu
-	;;
+	    mysql:5.5 || exit
+	echo MySQL is gestart
+
 EOF
 fi
 cat >> paqu.sh  <<'EOF'
+	echo PaQu wordt gestart
+	tmp=/tmp/paqu.$$
+	touch $tmp
+	docker run \
+	    -d \
+EOF
+if [ $SQLDOCKER = 1 ]
+then
+    echo '	    --link mysql.paqu:mysql \' >> paqu.sh
+fi
+cat >> paqu.sh  <<'EOF'
+	    --name=paqu.serve \
+	    --net=$net \
+	    -p $port:9000 \
+	    -v $dir:/mod/data \
+	    rugcompling/paqu:latest serve || exit
+	while [ ! -f $dir/pqserve.log -o $tmp -nt $dir/pqserve.log ]
+	do
+	    cat $dir/message
+	    sleep 1
+	done
+	rm $tmp
+	if [ -f $dir/message.err ]
+	then
+	    cat $dir/message.err
+	    echo FOUT
+	else
+	    echo PaQu is gestart
+	fi
+	;;
+    stop)
+	docker stop paqu.serve
+	docker rm paqu.serve
+EOF
+if [ $SQLDOCKER = 1 ]
+then
+    cat >> paqu.sh  <<'EOF'
+	docker stop mysql.paqu
+	docker rm mysql.paqu
+EOF
+fi
+cat >> paqu.sh  <<'EOF'
+	;;
     install_lassy)
 	if [ ! -f $dir/corpora/lassy.dact ]
 	then
@@ -468,22 +511,6 @@ cat >> paqu.sh  <<'EOF'
 	echo van \'default\' te veranderen in '"lassysmall"'
 	echo
 	;;
-    serve|pqserve)
-	docker rm paqu.serve &> /dev/null
-	docker run \
-EOF
-if [ $SQLDOCKER = 1 ]
-then
-    echo '	    --link mysql.paqu:mysql \' >> paqu.sh
-fi
-cat >> paqu.sh  <<'EOF'
-	    --name=paqu.serve \
-	    --net=$net \
-	    -i -t \
-	    -p $port:9000 \
-	    -v $dir:/mod/data \
-	    rugcompling/paqu:latest serve
-	;;
     status|pqstatus|rmcorpus|pqrmcorpus|rmuser|pqrmuser)
 	docker run \
 EOF
@@ -517,22 +544,15 @@ cat >> paqu.sh  <<'EOF'
 	echo
 	echo CMD is een van:
 	echo
-EOF
-if [ $SQLDOCKER = 1 ]
-then
-    cat >> paqu.sh  <<'EOF'
-	echo "  start          - start MySQL"
-	echo "  stop           - stop MySQL"
-	echo
-EOF
-fi
-cat >> paqu.sh  <<'EOF'
-	echo "  serve          - start de PaQu-server"
+	echo "  start          - start PaQu"
+	echo "  stop           - stop PaQu"
 	echo
 	echo "  install_lassy  - installeer het corpus Lassy Klein als globaal corpus"
-	echo "  status         - geef overzicht van gebruikers en hun corpora"
-	echo "  rmuser user    - verwijder gebruiker 'user' en al z'n corpora"
+	echo
+	echo "  clean          - verwijder oude gebruikers zonder corpora"
 	echo "  rmcorpus corp  - verwijder corpus 'corp'"
+	echo "  rmuser user    - verwijder gebruiker 'user' en al z'n corpora"
+	echo "  status         - geef overzicht van gebruikers en hun corpora"
 	echo
 	echo "  shell          - open een interactieve shell"
 	echo
