@@ -511,7 +511,7 @@ cat >> paqu.sh  <<'EOF'
 	echo van \'default\' te veranderen in '"lassysmall"'
 	echo
 	;;
-    status|pqstatus|rmcorpus|pqrmcorpus|rmuser|pqrmuser)
+    clean|pqclean|rmcorpus|pqrmcorpus|rmuser|pqrmuser|setquota|pqsetquota|status|pqstatus)
 	docker run \
 EOF
 if [ $SQLDOCKER = 1 ]
@@ -552,6 +552,8 @@ cat >> paqu.sh  <<'EOF'
 	echo "  clean          - verwijder oude gebruikers zonder corpora"
 	echo "  rmcorpus corp  - verwijder corpus 'corp'"
 	echo "  rmuser user    - verwijder gebruiker 'user' en al z'n corpora"
+	echo "  setquota quotum user..."
+	echo "                 - set quotum voor een of meer gebruikers"
 	echo "  status         - geef overzicht van gebruikers en hun corpora"
 	echo
 	echo "  shell          - open een interactieve shell"
@@ -561,3 +563,32 @@ esac
 EOF
 
 chmod +x paqu.sh
+
+cat <<EOF
+
+
+================================================================
+
+
+PaQu is klaar voor gebruik.
+
+EOF
+echo Eventueel kun je nog dingen aanpassen in: $DATA/setup.toml
+cat <<EOF
+
+
+
+Om PaQu te starten, run:
+
+    ./paqu.sh start
+
+De eerste keer duurt dat een paar minuten
+
+
+
+Voor een overzicht van andere commndo's, run:
+
+    ./paqu.sh
+
+
+EOF
