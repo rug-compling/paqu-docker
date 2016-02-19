@@ -56,78 +56,6 @@ fi
 mkdir -p $DATA/data
 
 echo
-echo Hoe wil je MySQL gebruiken?
-echo ' d - MySQL in Docker (eenvoudig)'
-echo ' s - Een reguliere server (je hebt een account voor MySQL nodig)'
-read -p "MySQL: (d/s) " MSS
-case $MSS in
-    [dD]*)
-	SQLDOCKER=1
-	;;
-    [sS]*)
-	SQLDOCKER=0
-	;;
-    *)
-	echo Setup afgebroken
-	exit
-	;;
-esac
-
-if [ $SQLDOCKER = 1 ]
-then
-    LOGIN='$LOGIN'
-    NET=default
-else
-    echo
-    echo Server waarop MySQL draait.
-    echo Laat dit leeg als MySQL op de locale machine draait.
-    echo Voorbeeld: mysql.paqu.nl
-    read -p "Server: " SERVER
-
-    echo
-    echo Inlognaam voor MySQL.
-    echo Voorbeeld: paqu
-    read -p "Inlognaam: " USER
-    if [ "$USER" = "" ]
-    then
-	echo Inlognaam ontbreekt
-	echo Setup afgebroken
-	exit
-    fi
-
-    echo
-    echo Wachtwoord van gebruiker \"$USER\" voor MySQL.
-    echo Voorbeeld: paqu
-    read -p "Wachtwoord: " PASS
-    if [ "$PASS" = "" ]
-    then
-	echo Wachtwoord ontbreekt
-	echo Setup afgebroken
-	exit
-    fi
-
-    echo
-    echo Database voor PaQu van gebruiker \"$USER\" voor MySQL.
-    echo Voorbeeld: paqu
-    read -p "Database: " DB
-    if [ "$DB" = "" ]
-    then
-	echo Database ontbreekt
-	echo Setup afgebroken
-	exit
-    fi
-
-    if [ "$SERVER" = "" -o "$SERVER" = "localhost" -o "$SERVER" = "127.0.0.1" ]
-    then
-	LOGIN="$USER:$PASS@/$DB"
-	NET=host
-    else
-	LOGIN="$USER:$PASS@tcp($SERVER)/$DB"
-	NET=default
-    fi
-fi
-
-echo
 echo Contact-informatie die op de info-pagina van PaQu komt te staan.
 echo Dit moet een geldig stuk HTML zijn.
 echo 'Voorbeeld: Bij vragen, mail naar <a href="mailto:help@pagu.nl">help@paqu.nl</a>'
@@ -200,7 +128,6 @@ export MAILFROM
 export SMTPSERV
 export SMTPUSER
 export SMTPPASS
-export LOGIN
 
 perl -n -e '
 $contact  = $ENV{CONTACT};
@@ -222,10 +149,6 @@ $smtpuser =~ s/\\/\\\\/g;
 $smtpuser =~ s/\"/\\\"/g;
 $smtppass =~ s/\\/\\\\/g;
 $smtppass =~ s/\"/\\\"/g;
-$login    =~ s/\\/\\\\/g;
-$login    =~ s/\"/\\\"/g;
-
-$login    =~ s!\@tcp\(([^):]+)\)/!\@tcp($1:3306)/!;
 $smtpserv =~ s/^[^:]+$/$&:25/;
 
 while (<>) {
@@ -235,7 +158,6 @@ while (<>) {
     s/~SMTPSERV~/"$smtpserv"/e;
     s/~SMTPUSER~/"$smtpuser"/e;
     s/~SMTPPASS~/"$smtppass"/e;
-    s/~LOGIN~/"$login"/e;
     print;
 }
 ' > $DATA/setup.toml << 'EOF'
@@ -373,7 +295,7 @@ mailfrom = "~MAILFROM~"
 smtpserv = "~SMTPSERV~"
 smtpuser = "~SMTPUSER~"
 smtppass = "~SMTPPASS~"
-login = "~LOGIN~"
+login = "$LOGIN"
 prefix = "pq"
 dact = true
 sh = "/bin/sh"
@@ -388,7 +310,6 @@ echo '#!/bin/bash' > paqu.sh
 echo >> paqu.sh
 echo dir=$DATA >> paqu.sh
 echo port=$PORT >> paqu.sh
-echo net=$NET >> paqu.sh
 
 cat >> paqu.sh  <<'EOF'
 
@@ -414,10 +335,6 @@ case "$1" in
     start)
 	docker rm paqu.serve &> /dev/null
 
-EOF
-if [ $SQLDOCKER = 1 ]
-then
-   cat >> paqu.sh  <<'EOF'
 	docker rm mysql.paqu &> /dev/null
 	echo MySQL wordt gestart
 	docker run \
@@ -431,31 +348,21 @@ then
 	    mysql:5.5 || exit
 	echo MySQL is gestart
 
-EOF
-fi
-cat >> paqu.sh  <<'EOF'
 	echo PaQu wordt gestart
-	tmp=/tmp/paqu.$$
-	touch $tmp
+	touch $dir/tm
 	docker run \
 	    -d \
-EOF
-if [ $SQLDOCKER = 1 ]
-then
-    echo '	    --link mysql.paqu:mysql \' >> paqu.sh
-fi
-cat >> paqu.sh  <<'EOF'
+	    --link mysql.paqu:mysql \
 	    --name=paqu.serve \
-	    --net=$net \
 	    -p $port:9000 \
 	    -v $dir:/mod/data \
 	    rugcompling/paqu:latest serve || exit
-	while [ ! -f $dir/pqserve.log -o $tmp -nt $dir/pqserve.log ]
+	while [ ! -f $dir/pqserve.log -o $dir/tm -nt $dir/pqserve.log ]
 	do
 	    cat $dir/message
 	    sleep 1
 	done
-	rm $tmp
+	rm $dir/tm
 	if [ -f $dir/message.err ]
 	then
 	    cat $dir/message.err
@@ -467,15 +374,8 @@ cat >> paqu.sh  <<'EOF'
     stop)
 	docker stop paqu.serve
 	docker rm paqu.serve
-EOF
-if [ $SQLDOCKER = 1 ]
-then
-    cat >> paqu.sh  <<'EOF'
 	docker stop mysql.paqu
 	docker rm mysql.paqu
-EOF
-fi
-cat >> paqu.sh  <<'EOF'
 	;;
     install_lassy)
 	if [ ! -f $dir/corpora/lassy.dact ]
@@ -495,14 +395,8 @@ cat >> paqu.sh  <<'EOF'
 	    exit
 	fi
 	docker run \
-EOF
-if [ $SQLDOCKER = 1 ]
-then
-    echo '	    --link mysql.paqu:mysql \' >> paqu.sh
-fi
-cat >> paqu.sh  <<'EOF'
+	    --link mysql.paqu:mysql \
 	    --rm \
-	    --net=$net \
 	    -v $dir:/mod/data \
 	    rugcompling/paqu:latest install_lassy
 	echo
@@ -513,27 +407,15 @@ cat >> paqu.sh  <<'EOF'
 	;;
     clean|pqclean|rmcorpus|pqrmcorpus|rmuser|pqrmuser|setquota|pqsetquota|status|pqstatus)
 	docker run \
-EOF
-if [ $SQLDOCKER = 1 ]
-then
-    echo '	    --link mysql.paqu:mysql \' >> paqu.sh
-fi
-cat >> paqu.sh  <<'EOF'
+	    --link mysql.paqu:mysql \
 	    --rm \
-	    --net=$net \
 	    -v $dir:/mod/data \
-	    rugcompling/paqu:latest $*
+	    rugcompling/paqu:latest "$@"
 	;;
     shell)
 	docker run \
-EOF
-if [ $SQLDOCKER = 1 ]
-then
-    echo '	    --link mysql.paqu:mysql \' >> paqu.sh
-fi
-cat >> paqu.sh  <<'EOF'
+	    --link mysql.paqu:mysql \
 	    --rm \
-	    --net=$net \
 	    -i -t \
 	    -v $dir:/mod/data \
 	    rugcompling/paqu:latest shell
