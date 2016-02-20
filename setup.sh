@@ -136,7 +136,6 @@ $mailfrom = $ENV{MAILFROM};
 $smtpserv = $ENV{SMTPSERV};
 $smtpuser = $ENV{SMTPUSER};
 $smtppass = $ENV{SMTPPASS};
-$login    = $ENV{LOGIN};
 $contact  =~ s/\\/\\\\/g;
 $contact  =~ s/\"/\\\"/g;
 $url      =~ s/\\/\\\\/g;
