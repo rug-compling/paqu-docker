@@ -440,7 +440,7 @@ case "$1" in
 	echo "  shell          - open een interactieve shell"
 	echo
 	echo "  up             - test of PaQu gereed is"
-	echo "  env            - environment van PaQu"
+	echo "  env            - environment voor commando's gestart door PaQu"
 	echo "  vars           - interne status van PaQu"
 	echo
 	;;
