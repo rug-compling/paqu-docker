@@ -439,6 +439,10 @@ case "$1" in
 	echo
 	echo "  shell          - open een interactieve shell"
 	echo
+	echo "  up             - test of PaQu gereed is"
+	echo "  env            - environment van PaQu"
+	echo "  vars           - interne status van PaQu"
+	echo
 	;;
 esac
 EOF
