@@ -289,7 +289,7 @@ loginurl = ""
 contact = "~CONTACT~"
 url = "~URL~"
 port = 9000
-default = "alpinotreebank"
+default = "lassysmall alpinotreebank"
 mailfrom = "~MAILFROM~"
 smtpserv = "~SMTPSERV~"
 smtpuser = "~SMTPUSER~"
@@ -398,11 +398,6 @@ case "$1" in
 	    --rm \
 	    -v $dir:/mod/data \
 	    rugcompling/paqu:latest install_lassy
-	echo
-	echo TIP: Je kunt van Lassy Klein het default-cropus maken door in
-	echo het bestand $dir/setup.toml de waarde
-	echo van \'default\' te veranderen in '"lassysmall"'
-	echo
 	;;
     clean|pqclean|rmcorpus|pqrmcorpus|rmuser|pqrmuser|setquota|pqsetquota|status|pqstatus)
 	docker run \
