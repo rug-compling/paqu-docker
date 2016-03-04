@@ -406,6 +406,15 @@ case "$1" in
 	    -v $dir:/mod/data \
 	    rugcompling/paqu:latest "$@"
 	;;
+    up)
+        curl http://127.0.0.1:$port/up
+        ;;
+    vars)
+        curl http://127.0.0.1:$port/debug/vars
+        ;;
+    env)
+        curl http://127.0.0.1:$port/debug/env
+        ;;
     shell)
 	docker run \
 	    --link mysql.paqu:mysql \
