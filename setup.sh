@@ -475,7 +475,7 @@ De eerste keer duurt dat een paar minuten
 
 
 
-Voor een overzicht van andere commndo's, run:
+Voor een overzicht van andere commando's, run:
 
     ./paqu.sh
 
