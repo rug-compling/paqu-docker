@@ -367,7 +367,9 @@ case "$1" in
 	    cat $dir/message.err
 	    echo FOUT
 	else
-	    echo PaQu is gestart
+	    echo
+	    echo PaQu is gestart op poort $port
+	    echo
 	fi
 	;;
     stop)
