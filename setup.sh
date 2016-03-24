@@ -2,6 +2,8 @@
 
 echo
 echo Plaats waar PaQu bestanden opslaat
+echo "LET OP: Een filesysteem als NFS en CIFS werkt niet"
+echo "        met Docker zonder speciale maatregelen"
 echo Voorbeeld: /var/paqu/data
 read -p "Directory: " DATA
 if [ "$DATA" = "" ]
@@ -419,11 +421,13 @@ case "$1" in
         curl http://127.0.0.1:$port/debug/env
         ;;
     upgrade)
+	echo PaQu wordt gestopt
 	docker stop paqu.serve
 	docker rm paqu.serve
 	docker stop mysql.paqu
 	docker rm mysql.paqu
 	docker pull rugcompling/paqu:latest
+	echo PaQu moet opnieuw gestart worden
 	;;
     shell)
 	docker run \
