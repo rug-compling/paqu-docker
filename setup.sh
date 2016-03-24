@@ -311,6 +311,7 @@ echo dir=$DATA >> paqu.sh
 echo port=$PORT >> paqu.sh
 
 cat >> paqu.sh  <<'EOF'
+mport=$(($port + 100))
 
 if [ ! -e "$dir/setup.toml" ]
 then
@@ -417,6 +418,13 @@ case "$1" in
     env)
         curl http://127.0.0.1:$port/debug/env
         ;;
+    upgrade)
+	docker stop paqu.serve
+	docker rm paqu.serve
+	docker stop mysql.paqu
+	docker rm mysql.paqu
+	docker pull rugcompling/paqu:latest
+	;;
     shell)
 	docker run \
 	    --link mysql.paqu:mysql \
@@ -424,6 +432,19 @@ case "$1" in
 	    -i -t \
 	    -v $dir:/mod/data \
 	    rugcompling/paqu:latest shell
+	;;
+    admin)
+	echo
+	echo phpMyAdmin wordt gestart op: http://localhost:$mport/
+	echo gebruikersnaam: paqu
+	echo wachtwoord: paqu
+	echo
+	docker run \
+	    --link mysql.paqu:db \
+	    --rm \
+	    -i -t \
+	    -p $mport:80 \
+	    phpmyadmin/phpmyadmin
 	;;
     *)
 	echo
@@ -443,7 +464,9 @@ case "$1" in
 	echo "                 - set quotum voor een of meer gebruikers"
 	echo "  status         - geef overzicht van gebruikers en hun corpora"
 	echo
+	echo "  upgrade        - upgrade naar laatste versie"
 	echo "  shell          - open een interactieve shell"
+	echo "  admin          - start phpMyAdmin"
 	echo
 	echo "  up             - test of PaQu gereed is"
 	echo "  env            - environment voor commando's gestart door PaQu"
