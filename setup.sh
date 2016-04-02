@@ -55,7 +55,27 @@ else
     esac
 
 fi
-mkdir -p $DATA/data
+for i in data mysql
+do
+    mkdir -p $DATA/$i
+    if [ ! -d $DATA/$i ]
+    then
+	echo Maken van $DATA/$i is mislukt
+	echo Setup afgebroken
+	exit
+    fi
+done
+
+stat -f $DATA 2>&1 | grep 'Type: nfs'
+if [ $? = 0 ]
+then
+    nsf=1
+else
+    nsf=0
+fi
+# TODO nfs
+# TODO non-local
+
 
 echo
 echo Contact-informatie die op de info-pagina van PaQu komt te staan.
