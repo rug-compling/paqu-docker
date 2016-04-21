@@ -2,9 +2,9 @@
 
 Hiermee kun je PaQu in Docker draaien.
 
-Download en run het script `setup.sh`
+Download en run het script `setup.bash`
 
-Daarna heb je een script `paqu.sh` waarmee je PaQu kunt starten.
+Daarna heb je een script `paqu.bash` waarmee je PaQu kunt starten.
 
 * * * * *
 

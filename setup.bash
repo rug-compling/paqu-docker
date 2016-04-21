@@ -327,12 +327,12 @@ remote = false
 
 EOF
 
-echo '#!/bin/bash' > paqu.sh
-echo >> paqu.sh
-echo dir=$DATA >> paqu.sh
-echo port=$PORT >> paqu.sh
+echo '#!/bin/bash' > paqu.bash
+echo >> paqu.bash
+echo dir=$DATA >> paqu.bash
+echo port=$PORT >> paqu.bash
 
-cat >> paqu.sh  <<'EOF'
+cat >> paqu.bash  <<'EOF'
 mport=$(($port + 100))
 
 if [ ! -e "$dir/setup.toml" ]
@@ -472,7 +472,7 @@ case "$1" in
 	;;
     *)
 	echo
-	echo Gebruik: paqu.sh CMD [args]
+	echo Gebruik: paqu.bash CMD [args]
 	echo
 	echo CMD is een van:
 	echo
@@ -500,7 +500,7 @@ case "$1" in
 esac
 EOF
 
-chmod +x paqu.sh
+chmod +x paqu.bash
 
 cat <<EOF
 
@@ -518,7 +518,7 @@ cat <<EOF
 
 Om PaQu te starten, run:
 
-    ./paqu.sh start
+    ./paqu.bash start
 
 De eerste keer duurt dat een paar minuten
 
@@ -526,7 +526,7 @@ De eerste keer duurt dat een paar minuten
 
 Voor een overzicht van andere commando's, run:
 
-    ./paqu.sh
+    ./paqu.bash
 
 
 EOF
