@@ -208,7 +208,7 @@ while (<>) {
 
 # Maximum aantal corpora dat gelijktijdig wordt verwerkt.
 # De verwerking van een corpus gebruikt ongeveer één processor voor 100%.
-maxjob = 10
+maxjob = 2
 
 # Hoeveel data mag een gebruiker uploaden? In aantal tokens, geteld na
 # splitsing van de data in tokens, opgeteld bij data die de gebruiker al
