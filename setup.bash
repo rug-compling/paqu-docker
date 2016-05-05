@@ -55,7 +55,7 @@ else
     esac
 
 fi
-for i in data mysql
+for i in data folia mysql
 do
     mkdir -p $DATA/$i
     if [ ! -d $DATA/$i ]
