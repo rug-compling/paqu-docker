@@ -334,6 +334,7 @@ echo port=$PORT >> paqu.bash
 
 cat >> paqu.bash  <<'EOF'
 mport=$(($port + 100))
+localhost=`docker-machine ip my-docker-vm 2> /dev/null || echo 127.0.0.1`
 
 if [ ! -e "$dir/setup.toml" ]
 then
@@ -391,7 +392,7 @@ case "$1" in
 	    echo FOUT
 	else
 	    echo
-	    echo PaQu is gestart op poort $port
+	    echo PaQu is gestart op http://$localhost:$port/
 	    echo
 	fi
 	;;
@@ -432,13 +433,13 @@ case "$1" in
 	    rugcompling/paqu:latest "$@"
 	;;
     up)
-        curl http://127.0.0.1:$port/up
+        curl http://$localhost:$port/up
         ;;
     vars)
-        curl http://127.0.0.1:$port/debug/vars
+        curl http://$localhost:$port/debug/vars
         ;;
     env)
-        curl http://127.0.0.1:$port/debug/env
+        curl http://$localhost:$port/debug/env
         ;;
     upgrade)
 	echo PaQu wordt gestopt
@@ -459,7 +460,7 @@ case "$1" in
 	;;
     admin)
 	echo
-	echo phpMyAdmin wordt gestart op: http://localhost:$mport/
+	echo phpMyAdmin wordt gestart op: http://$localhost:$mport/
 	echo gebruikersnaam: paqu
 	echo wachtwoord: paqu
 	echo
