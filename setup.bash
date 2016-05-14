@@ -2,9 +2,9 @@
 
 echo
 echo Plaats waar PaQu bestanden opslaat
-echo "LET OP: Een niet-lokaal filesysteem zoals NFS of CIFS"
-echo "        werkt niet met Docker zonder speciale maatregelen"
-echo Voorbeeld: /var/paqu/data
+echo Voorbeeld, Linux: /home/paul/paqu/data
+echo Voorbeeld, MacOS: /Users/paul/paqu/data
+echo Voorbeeld, Windows: /c/Users/paul/paqu/data
 read -p "Directory: " DATA
 if [ "$DATA" = "" ]
 then
