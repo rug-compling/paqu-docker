@@ -338,6 +338,8 @@ echo port=$PORT >> paqu.bash
 cat >> paqu.bash  <<'EOF'
 mport=$(($port + 100))
 localhost=`docker-machine ip my-docker-vm 2> /dev/null || echo 127.0.0.1`
+uid=`stat -c "%u" $dir`
+gid=`stat -c "%g" $dir`
 
 if [ ! -e "$dir/setup.toml" ]
 then
@@ -371,7 +373,9 @@ case "$1" in
 	    -e MYSQL_DATABASE=paqu \
 	    -e MYSQL_USER=paqu \
 	    -e MYSQL_PASSWORD=paqu \
-	    mysql:5.5 || exit
+	    -e PAQU_UID=$uid \
+	    -e PAQU_GID=$gid \
+	    rugcompling/mysql:5.5 || exit
 	echo MySQL is gestart
 
 	echo PaQu wordt gestart
@@ -382,6 +386,8 @@ case "$1" in
 	    --name=paqu.serve \
 	    -p $port:9000 \
 	    -v $dir:/mod/data \
+	    -e PAQU_UID=$uid \
+	    -e PAQU_GID=$gid \
 	    rugcompling/paqu:latest serve || exit
 	while [ ! -f $dir/pqserve.log -o $dir/tm -nt $dir/pqserve.log ]
 	do
@@ -426,6 +432,8 @@ case "$1" in
 	    --link mysql.paqu:mysql \
 	    --rm \
 	    -v $dir:/mod/data \
+	    -e PAQU_UID=$uid \
+	    -e PAQU_GID=$gid \
 	    rugcompling/paqu:latest install_lassy
 	;;
     clean|pqclean|rmcorpus|pqrmcorpus|rmuser|pqrmuser|setquota|pqsetquota|status|pqstatus)
@@ -433,6 +441,8 @@ case "$1" in
 	    --link mysql.paqu:mysql \
 	    --rm \
 	    -v $dir:/mod/data \
+	    -e PAQU_UID=$uid \
+	    -e PAQU_GID=$gid \
 	    rugcompling/paqu:latest "$@"
 	;;
     up)
@@ -450,15 +460,27 @@ case "$1" in
 	docker rm paqu.serve
 	docker stop mysql.paqu
 	docker rm mysql.paqu
+	docker pull rugcompling/mysql:5.5
 	docker pull rugcompling/paqu:latest
 	echo PaQu moet opnieuw gestart worden
 	;;
-    shell)
+    shell-sql)
 	docker run \
 	    --link mysql.paqu:mysql \
 	    --rm \
 	    -i -t \
 	    -v $dir:/mod/data \
+	    -e PAQU_UID=$uid \
+	    -e PAQU_GID=$gid \
+	    rugcompling/paqu:latest shell
+	;;
+    shell)
+	docker run \
+	    --rm \
+	    -i -t \
+	    -v $dir:/mod/data \
+	    -e PAQU_UID=$uid \
+	    -e PAQU_GID=$gid \
 	    rugcompling/paqu:latest shell
 	;;
     admin)
@@ -494,6 +516,7 @@ case "$1" in
 	echo
 	echo "  upgrade        - upgrade naar laatste versie"
 	echo "  shell          - open een interactieve shell"
+	echo "  shell-sql      - open een interactieve shell, met toegang tot MySQL"
 	echo "  admin          - start phpMyAdmin"
 	echo
 	echo "  up             - test of PaQu gereed is"
