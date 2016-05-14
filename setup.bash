@@ -464,16 +464,6 @@ case "$1" in
 	docker pull rugcompling/paqu:latest
 	echo PaQu moet opnieuw gestart worden
 	;;
-    shell-sql)
-	docker run \
-	    --link mysql.paqu:mysql \
-	    --rm \
-	    -i -t \
-	    -v $dir:/mod/data \
-	    -e PAQU_UID=$uid \
-	    -e PAQU_GID=$gid \
-	    rugcompling/paqu:latest shell
-	;;
     shell)
 	docker run \
 	    --rm \
@@ -516,7 +506,6 @@ case "$1" in
 	echo
 	echo "  upgrade        - upgrade naar laatste versie"
 	echo "  shell          - open een interactieve shell"
-	echo "  shell-sql      - open een interactieve shell, met toegang tot MySQL"
 	echo "  admin          - start phpMyAdmin"
 	echo
 	echo "  up             - test of PaQu gereed is"
