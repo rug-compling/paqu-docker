@@ -55,12 +55,12 @@ else
     esac
 
 fi
-for i in data folia mysql
+for i in corpora data folia mysql
 do
     mkdir -p $DATA/$i
     if [ ! -d $DATA/$i ]
     then
-	echo Maken van $DATA/$i is mislukt
+	echo Maken van directory $DATA/$i is mislukt
 	echo Setup afgebroken
 	exit
     fi
@@ -338,8 +338,8 @@ echo port=$PORT >> paqu.bash
 cat >> paqu.bash  <<'EOF'
 mport=$(($port + 100))
 localhost=`docker-machine ip my-docker-vm 2> /dev/null || echo 127.0.0.1`
-uid=`stat -c "%u" $dir`
-gid=`stat -c "%g" $dir`
+uid=`stat -c %u $dir/setup.toml`
+gid=`stat -c %g $dir/setup.toml`
 
 if [ ! -e "$dir/setup.toml" ]
 then
@@ -386,8 +386,7 @@ case "$1" in
 	    --name=paqu.serve \
 	    -p $port:9000 \
 	    -v $dir:/mod/data \
-	    -e PAQU_UID=$uid \
-	    -e PAQU_GID=$gid \
+	    --user=$uid:$gid \
 	    rugcompling/paqu:latest serve || exit
 	while [ ! -f $dir/pqserve.log -o $dir/tm -nt $dir/pqserve.log ]
 	do
@@ -432,8 +431,7 @@ case "$1" in
 	    --link mysql.paqu:mysql \
 	    --rm \
 	    -v $dir:/mod/data \
-	    -e PAQU_UID=$uid \
-	    -e PAQU_GID=$gid \
+	    --user=$uid:$gid \
 	    rugcompling/paqu:latest install_lassy
 	;;
     clean|pqclean|rmcorpus|pqrmcorpus|rmuser|pqrmuser|setquota|pqsetquota|status|pqstatus)
@@ -441,8 +439,7 @@ case "$1" in
 	    --link mysql.paqu:mysql \
 	    --rm \
 	    -v $dir:/mod/data \
-	    -e PAQU_UID=$uid \
-	    -e PAQU_GID=$gid \
+	    --user=$uid:$gid \
 	    rugcompling/paqu:latest "$@"
 	;;
     up)
@@ -469,8 +466,6 @@ case "$1" in
 	    --rm \
 	    -i -t \
 	    -v $dir:/mod/data \
-	    -e PAQU_UID=$uid \
-	    -e PAQU_GID=$gid \
 	    rugcompling/paqu:latest shell
 	;;
     admin)
