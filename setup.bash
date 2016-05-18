@@ -1,10 +1,72 @@
 #!/bin/bash
 
+os=unknown
+case "`docker info 2> /dev/null`" in
+    *[lL][iI][nN][uU][xX]*)
+	os=linux
+	;;
+    *[dD][aA][rR][wW][iI][nN]*)
+	os=darwin
+	;;
+    *[wW][iI][nN][dD][oO][wW][sS]*)
+	os=windows
+	;;
+esac
+
+if [ $os != unknown ]
+then
+    echo
+    echo Platform gedetecteerd: $os
+    read -p "Is dit juist? (j/n) " JN
+    case "$JN" in
+	[jJyY]*)
+	    ;;
+	*)
+	    os=unknown
+	    ;;
+    esac
+fi
+
+if [ $os = unknown ]
+then
+    echo
+    echo Kies het platform
+    select i in linux darwin windows
+    do
+	case $i in
+	    linux|darwin|windows)
+		os=$i
+		break
+		;;
+	esac
+    done
+fi
+
+vagrant=no
+if [ $os = darwin ]
+then
+    echo
+    read -p "Gebruik je Vagrant? (j/n) " JN
+    case "$JN" in
+	[jJyY]*)
+	    vagrant=yes
+	    ;;
+    esac
+fi
+
 echo
 echo Plaats waar PaQu bestanden opslaat
-echo Voorbeeld, Linux: /home/paul/paqu/data
-echo Voorbeeld, MacOS: /Users/paul/paqu/data
-echo Voorbeeld, Windows: /c/Users/paul/paqu/data
+case $os in
+    linux)
+	echo Voorbeeld: /home/paul/paqu/data
+	;;
+    darwin)
+	echo Voorbeeld: /Users/paul/paqu/data
+	;;
+    windows)
+	echo Voorbeeld: /c/Users/paul/paqu/data
+	;;
+esac
 read -p "Directory: " DATA
 if [ "$DATA" = "" ]
 then
@@ -65,17 +127,6 @@ do
 	exit
     fi
 done
-
-stat -f $DATA 2>&1 | grep 'Type: nfs'
-if [ $? = 0 ]
-then
-    nsf=1
-else
-    nsf=0
-fi
-# TODO nfs
-# TODO non-local
-
 
 echo
 echo Contact-informatie die op de info-pagina van PaQu komt te staan.
@@ -334,12 +385,20 @@ echo '#!/bin/bash' > paqu.bash
 echo >> paqu.bash
 echo dir=$DATA >> paqu.bash
 echo port=$PORT >> paqu.bash
+echo 'mport=$(($port + 100))' >> paqu.bash
+if [ $os = linux ]
+then
+    echo localhost=127.0.0.1 >> paqu.bash
+else
+    echo 'localhost=`docker-machine ip my-docker-vm 2> /dev/null || echo 127.0.0.1`' >> paqu.bash
+fi
+if [ $os = linux ]
+then
+    echo uid=`stat -c %u $DATA/setup.toml` >> paqu.bash
+    echo gid=`stat -c %g $DATA/setup.toml` >> paqu.bash
+fi
 
 cat >> paqu.bash  <<'EOF'
-mport=$(($port + 100))
-localhost=`docker-machine ip my-docker-vm 2> /dev/null || echo 127.0.0.1`
-uid=`stat -c %u $dir/setup.toml`
-gid=`stat -c %g $dir/setup.toml`
 
 if [ ! -e "$dir/setup.toml" ]
 then
@@ -365,6 +424,32 @@ case "$1" in
 
 	docker rm mysql.paqu &> /dev/null
 	echo MySQL wordt gestart
+EOF
+if [ $os = darwin ]
+then
+    cat >> paqu.bash  <<'EOF'
+	docker run \
+	    -d \
+	    --name=mysql.paqu \
+	    -v $dir/mysql:/var/lib/mysql \
+	    -e MYSQL_ROOT_PASS=root \
+	    -e MYSQL_USER_DB=paqu \
+	    -e MYSQL_USER_NAME=paqu \
+	    -e MYSQL_USER_PASS=paqu \
+EOF
+    if [ $vagrant = yes ]
+    then
+	cat >> paqu.bash  <<'EOF'
+	    -e VAGRANT_OSX_MODE=true \
+	    -e DOCKER_USER_ID=$(id -u) \
+	    -e DOCKER_USER_GID=$(id -g) \
+EOF
+    fi
+    cat >> paqu.bash  <<'EOF'
+	    dgraziotin/mysql || exit
+EOF
+else
+    cat >> paqu.bash  <<'EOF'
 	docker run \
 	    -d \
 	    --name=mysql.paqu \
@@ -373,9 +458,18 @@ case "$1" in
 	    -e MYSQL_DATABASE=paqu \
 	    -e MYSQL_USER=paqu \
 	    -e MYSQL_PASSWORD=paqu \
-	    -e PAQU_UID=$uid \
-	    -e PAQU_GID=$gid \
-	    rugcompling/mysql:5.5 || exit
+EOF
+    if [ $os = linux ]
+    then
+	cat >> paqu.bash  <<'EOF'
+	    --user=$uid:$gid \
+EOF
+    fi
+    cat >> paqu.bash  <<'EOF'
+	    mysql:5.5 || exit
+EOF
+fi
+cat >> paqu.bash  <<'EOF'
 	echo MySQL is gestart
 
 	echo PaQu wordt gestart
@@ -386,7 +480,14 @@ case "$1" in
 	    --name=paqu.serve \
 	    -p $port:9000 \
 	    -v $dir:/mod/data \
+EOF
+if [ $os = linux ]
+then
+    cat >> paqu.bash  <<'EOF'
 	    --user=$uid:$gid \
+EOF
+fi
+cat >> paqu.bash  <<'EOF'
 	    rugcompling/paqu:latest serve || exit
 	while [ ! -f $dir/pqserve.log -o $dir/tm -nt $dir/pqserve.log ]
 	do
@@ -431,7 +532,14 @@ case "$1" in
 	    --link mysql.paqu:mysql \
 	    --rm \
 	    -v $dir:/mod/data \
+EOF
+if [ $os = linux ]
+then
+    cat >> paqu.bash  <<'EOF'
 	    --user=$uid:$gid \
+EOF
+fi
+cat >> paqu.bash  <<'EOF'
 	    rugcompling/paqu:latest install_lassy
 	;;
     clean|pqclean|rmcorpus|pqrmcorpus|rmuser|pqrmuser|setquota|pqsetquota|status|pqstatus)
@@ -439,25 +547,53 @@ case "$1" in
 	    --link mysql.paqu:mysql \
 	    --rm \
 	    -v $dir:/mod/data \
+EOF
+if [ $os = linux ]
+then
+    cat >> paqu.bash  <<'EOF'
 	    --user=$uid:$gid \
+EOF
+fi
+cat >> paqu.bash  <<'EOF'
 	    rugcompling/paqu:latest "$@"
 	;;
     up)
-        curl http://$localhost:$port/up
-        ;;
+	curl http://$localhost:$port/up
+	;;
     vars)
-        curl http://$localhost:$port/debug/vars
-        ;;
+	curl http://$localhost:$port/debug/vars
+	;;
     env)
-        curl http://$localhost:$port/debug/env
-        ;;
+	curl http://$localhost:$port/debug/env
+	;;
+    upgrade-all)
+	echo PaQu wordt gestopt
+	docker stop paqu.serve
+	docker rm paqu.serve
+	docker stop mysql.paqu
+	docker rm mysql.paqu
+EOF
+if [ $os = darwin ]
+then
+    cat >> paqu.bash  <<'EOF'
+	docker pull dgraziotin/mysql
+EOF
+else
+    cat >> paqu.bash  <<'EOF'
+	docker pull mysql:5.5
+EOF
+fi
+cat >> paqu.bash  <<'EOF'
+	docker pull phpmyadmin/phpmyadmin
+	docker pull rugcompling/paqu:latest
+	echo PaQu moet opnieuw gestart worden
+	;;
     upgrade)
 	echo PaQu wordt gestopt
 	docker stop paqu.serve
 	docker rm paqu.serve
 	docker stop mysql.paqu
 	docker rm mysql.paqu
-	docker pull rugcompling/mysql:5.5
 	docker pull rugcompling/paqu:latest
 	echo PaQu moet opnieuw gestart worden
 	;;
@@ -499,7 +635,8 @@ case "$1" in
 	echo "                 - set quotum voor een of meer gebruikers"
 	echo "  status         - geef overzicht van gebruikers en hun corpora"
 	echo
-	echo "  upgrade        - upgrade naar laatste versie"
+	echo "  upgrade        - upgrade naar laatste versie van PaQu"
+	echo "  upgrade-all    - upgrade naar laatste versie van PaQu, MySQL, phpMyAdmin"
 	echo "  shell          - open een interactieve shell"
 	echo "  admin          - start phpMyAdmin"
 	echo
