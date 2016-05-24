@@ -168,9 +168,13 @@ then
 fi
 
 echo
-echo Wat is het adres van de mailserver waarmee PaQu mail kan versturen?
-echo Voorbeeld: smtp.paqu.nl
-read -p "Mailserver: " SMTPSERV
+echo Wat is het adres van de smtp-server waarmee PaQu mail kan versturen?
+echo Voorbeelden, met/zonder poortnummer, de eerste twee zijn gelijkwaardig:
+echo "  smtp.paqu.nl"
+echo "  smtp.paqu.nl:25"
+echo "  smtp.paqu.nl:465"
+echo "  smtp.paqu.nl:587"
+read -p "SMTP-server: " SMTPSERV
 if [ "$SMTPSERV" = "" ]
 then
     echo Mailserver ontbreekt
@@ -473,7 +477,7 @@ cat >> paqu.bash  <<'EOF'
 	echo MySQL is gestart
 
 	echo PaQu wordt gestart
-	touch $dir/tm
+	touch $dir/tm $dir/message
 	docker run \
 	    -d \
 	    --link mysql.paqu:mysql \
