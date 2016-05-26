@@ -1,5 +1,14 @@
 #!/bin/bash
 
+echo > paqu.bash
+if [ $? != 0 ]
+then
+    echo Het script paqu.bash kan niet aangemaakt worden
+    echo Draai setup.bash in een directory waar je schrijfrechten hebt
+    echo Setup afgebroken
+    exit
+fi
+
 os=unknown
 case "`docker info 2> /dev/null`" in
     *[lL][iI][nN][uU][xX]*)
@@ -17,7 +26,7 @@ if [ $os != unknown ]
 then
     echo
     echo Platform gedetecteerd: $os
-    read -p "Is dit juist? (j/n) " JN
+    read -p 'Is dit juist? (j/n) ' JN
     case "$JN" in
 	[jJyY]*)
 	    ;;
@@ -46,7 +55,7 @@ vagrant=no
 if [ $os = darwin ]
 then
     echo
-    read -p "Gebruik je Vagrant? (j/n) " JN
+    read -p 'Gebruik je Vagrant? (j/n) ' JN
     case "$JN" in
 	[jJyY]*)
 	    vagrant=yes
@@ -56,6 +65,7 @@ fi
 
 echo
 echo Plaats waar PaQu bestanden opslaat
+echo 'LET OP: De hoeveel data kan flink oplopen!'
 case $os in
     linux)
 	echo Voorbeeld: /home/paul/paqu/data
@@ -67,7 +77,7 @@ case $os in
 	echo Voorbeeld: /c/Users/paul/paqu/data
 	;;
 esac
-read -p "Directory: " DATA
+read -p 'Directory: ' DATA
 if [ "$DATA" = "" ]
 then
     echo Setup afgebroken
@@ -84,7 +94,7 @@ then
     if [ -f "$DATA/setup.toml" ]
     then
 	echo Er staat al en setup.toml in $DATA
-	read -p "Setup vervangen? (j/n) " JN
+	read -p 'Setup vervangen? (j/n) ' JN
 	case $JN in
 	    [jJyY]*)
 	    	;;
@@ -106,7 +116,7 @@ then
 else
 
     echo Directory $DATA bestaat niet
-    read -p "Directory aanmaken? (j/n) " JN
+    read -p 'Directory aanmaken? (j/n) ' JN
     case $JN in
 	[jJyY]*)
 	    ;;
@@ -132,12 +142,12 @@ echo
 echo Contact-informatie die op de info-pagina van PaQu komt te staan.
 echo Dit moet een geldig stuk HTML zijn.
 echo 'Voorbeeld: Bij vragen, mail naar <a href="mailto:help@pagu.nl">help@paqu.nl</a>'
-read -p "Contact: " CONTACT
+read -p 'Contact: ' CONTACT
 
 echo
 echo Op welke poort wil je PaQu laten draaien?
 echo Voorbeeld: 9000
-read -p "Poort: " PORT
+read -p 'Poort: ' PORT
 if [ "$PORT" = "" ]
 then
     echo Poortnummer ontbreekt
@@ -148,18 +158,32 @@ fi
 echo
 echo Wat is de url waarop PaQu via het web beschikbaar komt?
 echo Voorbeeld: http://pagu.nl:$PORT/
-read -p "Url: " URL
+read -p 'Url: ' URL
 if [ "$URL" = "" ]
 then
     echo Url ontbreekt
     echo Setup afgebroken
     exit
 fi
+case "$URL" in
+    http://*|https://*)
+	;;
+    *)
+	URL="http://$URL"
+	;;
+esac
+case "$URL" in
+    */)
+	;;
+    *)
+	URL="$URL/"
+	;;
+esac
 
 echo
 echo Wat is het adres dat gebruikt moet worden als afzender in mail verstuurd door PaQu?
 echo Voorbeeld: maintainer@paqu.nl
-read -p "Adres: " MAILFROM
+read -p 'Adres: ' MAILFROM
 if [ "$MAILFROM" = "" ]
 then
     echo Adres ontbreekt
@@ -169,12 +193,13 @@ fi
 
 echo
 echo Wat is het adres van de smtp-server waarmee PaQu mail kan versturen?
-echo Voorbeelden, met/zonder poortnummer, de eerste twee zijn gelijkwaardig:
-echo "  smtp.paqu.nl"
-echo "  smtp.paqu.nl:25"
-echo "  smtp.paqu.nl:465"
-echo "  smtp.paqu.nl:587"
-read -p "SMTP-server: " SMTPSERV
+echo TIP: Kijk in je mailprogramma naar de instellingen van smtp.
+echo 'Voorbeelden, met/zonder poortnummer (poort 25 is de default):'
+echo '  smtp.paqu.nl'
+echo '  smtp.paqu.nl:25'
+echo '  smtp.paqu.nl:465'
+echo '  smtp.paqu.nl:587'
+read -p 'SMTP-server: ' SMTPSERV
 if [ "$SMTPSERV" = "" ]
 then
     echo Mailserver ontbreekt
@@ -185,12 +210,12 @@ fi
 echo
 echo Is het nodig in te loggen op de mailserver voordat je er mail heen kunt zenden?
 echo Zo ja, geef dan je loginnaam voor de mailserver
-read -p "Username: " SMTPUSER
+read -p 'Username: ' SMTPUSER
 if [ "$SMTPUSER" != "" ]
 then
     echo
     echo Geef je password voor de mailserver
-    read -p "Password: " SMTPPASS
+    read -p 'Password: ' SMTPPASS
     if [ "$SMTPPASS" = "" ]
     then
 	echo Password ontbreekt
