@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo > paqu.bash
+echo >> paqu.bash
 if [ $? != 0 ]
 then
     echo Het script paqu.bash kan niet aangemaakt worden
