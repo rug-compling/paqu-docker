@@ -405,7 +405,6 @@ dact = true
 sh = "/bin/sh"
 path = "/mod/paqu/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 alpino = "/mod/Alpino"
-alpino15 = true
 remote = false
 
 EOF
