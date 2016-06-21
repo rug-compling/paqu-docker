@@ -83,6 +83,16 @@ then
     echo Setup afgebroken
     exit
 fi
+case "$DATA" in
+    /*)
+	;;
+    *)
+	echo Je moet een absoluut path naar een directory opgeven
+	echo "'$DATA'" is geen absoluut path
+	echo Setup afgebroken
+	exit
+	;;
+esac
 if [ -e "$DATA" ]
 then
     if [ ! -d "$DATA" ]
