@@ -1,5 +1,23 @@
 #!/bin/bash
 
+script='
+@parts = ("/");
+$p = "";
+foreach $part (split m!/!, $ENV{dir}) {
+    if ($part ne "") {
+	$p .= "/" . $part;
+	push @parts, $p;
+    }
+}
+foreach $p (@parts) {
+    $s = `stat -c %A "$p"`;
+    if ($s =~ /d(...){0,2}..-/) {
+        print "$p";
+	exit;
+    }
+}
+'
+
 echo >> paqu.bash
 if [ $? != 0 ]
 then
@@ -147,6 +165,25 @@ do
 	exit
     fi
 done
+
+# ik weet niet of deze test werkt op darwin of windows
+if [ $os = linux ]
+then
+    st=`stat -f -c %T "$DATA"`
+    case "$st" in
+	nfs*)
+	    P=`dir="$DATA" perl -e "$script"`
+	    if [ "$P" != "" ]
+	    then
+		echo Het path "'$P'" moet voor iedereen executable zijn
+		echo Doe eerst:
+		echo "  chmod a+x $P"
+		echo Setup afgebroken
+		exit
+	    fi
+	    ;;
+    esac
+fi
 
 echo
 echo Contact-informatie die op de info-pagina van PaQu komt te staan.
