@@ -42,10 +42,10 @@ RUN echo OPTS = -v                          > /mod/paqu/src/Makefile.cfg && \
     echo export LIBRARY_PATH=/mod/dbxml/lib >> /mod/paqu/src/Makefile.cfg
 RUN make -C /mod/paqu/src all
 
-ADD files/corpustest.go /mod/tools/                                                                                     
-ADD files/dbwait.go /mod/tools/                                                                                     
-ADD files/init.sh /mod/etc/                                                                                     
-ADD files/entrypoint.sh /mod/etc
+ADD corpustest.go /mod/tools/                                                                                     
+ADD dbwait.go /mod/tools/                                                                                     
+ADD init.sh /mod/etc/                                                                                     
+ADD entrypoint.sh /mod/etc
 
 EXPOSE 9000
 
