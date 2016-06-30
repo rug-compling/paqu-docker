@@ -1,3 +1,11 @@
+#
+# PaQu in Docker
+#
+# To build and push to docker hub:
+#
+#     docker build -t rugcompling/paqu:latest .
+#     docker push rugcompling/paqu:latest
+#
 
 FROM debian:8
 
@@ -46,6 +54,10 @@ ADD corpustest.go /mod/tools/
 ADD dbwait.go /mod/tools/                                                                                     
 ADD init.sh /mod/etc/                                                                                     
 ADD entrypoint.sh /mod/etc
+RUN chmod 555 /mod/etc/entrypoint.sh && \
+    cd /mod/tools && \
+    GOPATH=/mod/paqu/_vendor go build corpustest.go && \
+    GOPATH=/mod/paqu/_vendor go build dbwait.go
 
 EXPOSE 9000
 
