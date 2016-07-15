@@ -29,14 +29,14 @@ fi
 
 os=unknown
 case "`docker info 2> /dev/null`" in
-    *[lL][iI][nN][uU][xX]*)
-	os=linux
-	;;
     *[dD][aA][rR][wW][iI][nN]*)
 	os=darwin
 	;;
     *[wW][iI][nN][dD][oO][wW][sS]*)
 	os=windows
+	;;
+    *[lL][iI][nN][uU][xX]*)
+	os=linux
 	;;
 esac
 
