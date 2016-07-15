@@ -27,50 +27,10 @@ then
     exit
 fi
 
-os=unknown
-case "`docker info 2> /dev/null`" in
-    *[dD][aA][rR][wW][iI][nN]*)
-	os=darwin
-	;;
-    *[wW][iI][nN][dD][oO][wW][sS]*)
-	os=windows
-	;;
-    *[lL][iI][nN][uU][xX]*)
-	os=linux
-	;;
-esac
-
-if [ $os != unknown ]
-then
-    echo
-    echo Platform gedetecteerd: $os
-    read -p 'Is dit juist? (j/n) ' JN
-    case "$JN" in
-	[jJyY]*)
-	    ;;
-	*)
-	    os=unknown
-	    ;;
-    esac
-fi
-
-if [ $os = unknown ]
-then
-    echo
-    echo Kies het platform
-    select i in linux darwin windows
-    do
-	case $i in
-	    linux|darwin|windows)
-		os=$i
-		break
-		;;
-	esac
-    done
-fi
+os=`docker version -f {{.Client.Os}}`
 
 vagrant=no
-if [ $os = darwin ]
+if [ "$os" = darwin ]
 then
     echo
     read -p 'Gebruik je Vagrant? (j/n) ' JN
@@ -84,15 +44,15 @@ fi
 echo
 echo Plaats waar PaQu bestanden opslaat
 echo 'LET OP: De hoeveel data kan flink oplopen!'
-case $os in
-    linux)
-	echo Voorbeeld: /home/paul/paqu/data
-	;;
+case "$os" in
     darwin)
 	echo Voorbeeld: /Users/paul/paqu/data
 	;;
     windows)
 	echo Voorbeeld: /c/Users/paul/paqu/data
+	;;
+    *)
+	echo Voorbeeld: /home/paul/paqu/data
 	;;
 esac
 read -p 'Directory: ' DATA
@@ -167,7 +127,7 @@ do
 done
 
 # ik weet niet of deze test werkt op darwin of windows
-if [ $os = linux ]
+if [ "$os" = linux ]
 then
     st=`stat -f -c %T "$DATA"`
     case "$st" in
@@ -461,13 +421,13 @@ echo >> paqu.bash
 echo dir=$DATA >> paqu.bash
 echo port=$PORT >> paqu.bash
 echo 'mport=$(($port + 100))' >> paqu.bash
-if [ $os = linux ]
+if [ "$os" = linux ]
 then
     echo localhost=127.0.0.1 >> paqu.bash
 else
     echo 'localhost=`docker-machine ip my-docker-vm 2> /dev/null || echo 127.0.0.1`' >> paqu.bash
 fi
-if [ $os = linux ]
+if [ "$os" = linux ]
 then
     echo uid=`stat -c %u $DATA/setup.toml` >> paqu.bash
     echo gid=`stat -c %g $DATA/setup.toml` >> paqu.bash
@@ -500,7 +460,7 @@ case "$1" in
 	docker rm mysql.paqu &> /dev/null
 	echo MySQL wordt gestart
 EOF
-if [ $os = darwin ]
+if [ "$os" = darwin ]
 then
     cat >> paqu.bash  <<'EOF'
 	docker run \
@@ -534,7 +494,7 @@ else
 	    -e MYSQL_USER=paqu \
 	    -e MYSQL_PASSWORD=paqu \
 EOF
-    if [ $os = linux ]
+    if [ "$os" = linux ]
     then
 	cat >> paqu.bash  <<'EOF'
 	    --user=$uid:$gid \
@@ -556,7 +516,7 @@ cat >> paqu.bash  <<'EOF'
 	    -p $port:9000 \
 	    -v $dir:/mod/data \
 EOF
-if [ $os = linux ]
+if [ "$os" = linux ]
 then
     cat >> paqu.bash  <<'EOF'
 	    --user=$uid:$gid \
@@ -608,7 +568,7 @@ cat >> paqu.bash  <<'EOF'
 	    --rm \
 	    -v $dir:/mod/data \
 EOF
-if [ $os = linux ]
+if [ "$os" = linux ]
 then
     cat >> paqu.bash  <<'EOF'
 	    --user=$uid:$gid \
@@ -623,7 +583,7 @@ cat >> paqu.bash  <<'EOF'
 	    --rm \
 	    -v $dir:/mod/data \
 EOF
-if [ $os = linux ]
+if [ "$os" = linux ]
 then
     cat >> paqu.bash  <<'EOF'
 	    --user=$uid:$gid \
@@ -648,7 +608,7 @@ cat >> paqu.bash  <<'EOF'
 	docker stop mysql.paqu
 	docker rm mysql.paqu
 EOF
-if [ $os = darwin ]
+if [ "$os" = darwin ]
 then
     cat >> paqu.bash  <<'EOF'
 	docker pull dgraziotin/mysql
