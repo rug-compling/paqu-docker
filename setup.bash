@@ -28,6 +28,16 @@ then
 fi
 
 os=`docker version -f {{.Client.Os}}`
+if [ "$os" = "linux" ]
+then
+    if [ -d /Users ]
+    then
+	os=darwin
+    elif [ -d /c/Users ]
+    then
+	os=windows
+    fi
+fi
 
 vagrant=no
 if [ "$os" = darwin ]
@@ -44,17 +54,7 @@ fi
 echo
 echo Plaats waar PaQu bestanden opslaat
 echo 'LET OP: De hoeveel data kan flink oplopen!'
-case "$os" in
-    darwin)
-	echo Voorbeeld: /Users/paul/paqu/data
-	;;
-    windows)
-	echo Voorbeeld: /c/Users/paul/paqu/data
-	;;
-    *)
-	echo Voorbeeld: /home/paul/paqu/data
-	;;
-esac
+echo Voorbeeld: $HOME/data
 read -p 'Directory: ' DATA
 if [ "$DATA" = "" ]
 then
