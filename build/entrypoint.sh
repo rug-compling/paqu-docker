@@ -2,16 +2,27 @@
 
 export LOGIN="paqu:paqu@tcp($MYSQL_PORT_3306_TCP_ADDR:$MYSQL_PORT_3306_TCP_PORT)/paqu"
 
+function cleanexit {
+    if [ "$cpid" != "" ]
+    then
+        kill $cpid
+    fi
+    exit
+}
+
 case "$1" in
 
     serve|pqserve)
+
+	trap cleanexit 1 2 3 9 15
+
 	cd /mod/data
 
 	echo Wachten tot MySQL beschikbaar is > message
 	/mod/tools/dbwait &> message.err
 	if [ $? != 0 ]
 	then
-	    touch pqserve.log
+	    touch fail
 	    exit
 	fi
 	rm message.err
@@ -27,13 +38,29 @@ case "$1" in
 	    echo Het corpus Alpino Treebank wordt ingevoerd > message
 	    echo /mod/corpora/cdb.dact | \
 		pqbuild -w -p '/mod/corpora/' alpinotreebank 'Alpino Treebank' none 1
-	    echo
 	fi
 
 	echo PaQu wordt gestart > message
 	# cd: anders werk pqbugtest niet
 	cd /mod/paqu/bin
-	exec pqserve
+	pqserve &
+	cpid=$!
+	for i in 1 2 3 4 5 6 7 8
+	do
+	    sleep 1
+	    if [ "`curl -s http://127.0.0.1:9000/up 2> /dev/null`" = "up" ]
+	    then
+		touch /mod/data/ok
+		break
+	    fi
+	done
+	if [ ! -f /mod/data/ok ]
+	then
+	    echo PaQu reageert niet > /mod/data/message.err
+	    touch /mod/data/fail
+	    exit
+	fi
+	wait $cpid
 	;;
 
     install_lassy)
@@ -50,7 +77,6 @@ case "$1" in
 	fi
 	echo /mod/data/corpora/lassy.dact | \
 		pqbuild -w -p '/mod/data/corpora/' lassysmall 'Lassy Klein' none 1
-
 	;;
 
     clean|pqclean)

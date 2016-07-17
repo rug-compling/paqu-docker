@@ -508,7 +508,8 @@ cat >> paqu.bash  <<'EOF'
 	echo MySQL is gestart
 
 	echo PaQu wordt gestart
-	touch $dir/tm $dir/message
+	rm -f $dir/ok $dir/fail $dir/message $dir/message.err
+	touch $dir/message
 	docker run \
 	    -d \
 	    --link mysql.paqu:mysql \
@@ -524,13 +525,12 @@ EOF
 fi
 cat >> paqu.bash  <<'EOF'
 	    rugcompling/paqu:latest serve || exit
-	while [ ! -f $dir/pqserve.log -o $dir/tm -nt $dir/pqserve.log ]
+	while [ ! -f $dir/ok -a ! -f $dir/fail ]
 	do
 	    cat $dir/message
 	    sleep 1
 	done
-	rm $dir/tm
-	if [ -f $dir/message.err ]
+	if [ -f $dir/fail ]
 	then
 	    cat $dir/message.err
 	    echo FOUT
@@ -539,6 +539,7 @@ cat >> paqu.bash  <<'EOF'
 	    echo PaQu is gestart op http://$localhost:$port/
 	    echo
 	fi
+	rm -f $dir/ok $dir/fail $dir/message $dir/message.err
 	;;
     stop)
 	docker stop paqu.serve
