@@ -31,7 +31,7 @@ ENV PATH /mod/paqu/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbi
 ENV PAQU /mod/data
 
 RUN cd /usr/local && \
-    curl -s https://storage.googleapis.com/golang/go1.6.2.linux-amd64.tar.gz | tar vxzf - && \
+    curl -s https://storage.googleapis.com/golang/go1.6.3.linux-amd64.tar.gz | tar vxzf - && \
     cd go && rm -r api blog doc misc test
 
 # Downloading the index triggers a new download of sources when anything in the index has changed
