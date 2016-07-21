@@ -81,7 +81,7 @@ elke directory kunt gebruiken. Mogelijk moet je hier een directory
 opgeven die begint met: `/Users`
 
 De scripts `setup.bash` en `paqu.bash` zouden in een gewone shell van Mac
-moeten werken. Maar in **Docker for Windows** werkt het linken van een
+moeten werken. Maar in *Docker for Windows* werkt het linken van een
 directory naar de docker container momenteel niet. Geen idee hoe dat
 onder Mac is.
 
