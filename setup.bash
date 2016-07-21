@@ -28,16 +28,6 @@ then
 fi
 
 os=`docker version -f {{.Client.Os}}`
-if [ "$os" = "linux" ]
-then
-    if [ -d /Users ]
-    then
-	os=darwin
-    elif [ -d /c/Users ]
-    then
-	os=windows
-    fi
-fi
 
 vagrant=no
 if [ "$os" = darwin ]
@@ -54,7 +44,7 @@ fi
 echo
 echo Plaats waar PaQu bestanden opslaat
 echo 'LET OP: De hoeveel data kan flink oplopen!'
-echo Voorbeeld: $HOME/data
+echo Voorbeeld: $HOME/paqu-data
 read -p 'Directory: ' DATA
 if [ "$DATA" = "" ]
 then
@@ -146,12 +136,6 @@ then
 fi
 
 echo
-echo Contact-informatie die op de info-pagina van PaQu komt te staan.
-echo Dit moet een geldig stuk HTML zijn.
-echo 'Voorbeeld: Bij vragen, mail naar <a href="mailto:help@pagu.nl">help@paqu.nl</a>'
-read -p 'Contact: ' CONTACT
-
-echo
 echo Op welke poort wil je PaQu laten draaien?
 echo Voorbeeld: 9000
 read -p 'Poort: ' PORT
@@ -161,31 +145,6 @@ then
     echo Setup afgebroken
     exit
 fi
-
-echo
-echo Wat is de url waarop PaQu via het web beschikbaar komt?
-echo Voorbeeld: http://pagu.nl:$PORT/
-read -p 'Url: ' URL
-if [ "$URL" = "" ]
-then
-    echo Url ontbreekt
-    echo Setup afgebroken
-    exit
-fi
-case "$URL" in
-    http://*|https://*)
-	;;
-    *)
-	URL="http://$URL"
-	;;
-esac
-case "$URL" in
-    */)
-	;;
-    *)
-	URL="$URL/"
-	;;
-esac
 
 echo
 echo Wat is het adres dat gebruikt moet worden als afzender in mail verstuurd door PaQu?
@@ -198,14 +157,16 @@ then
     exit
 fi
 
+maildomain=`echo $MAILFROM | sed -e 's/.*@//'`
+
 echo
 echo Wat is het adres van de smtp-server waarmee PaQu mail kan versturen?
 echo TIP: Kijk in je mailprogramma naar de instellingen van smtp.
 echo 'Voorbeelden, met/zonder poortnummer (poort 25 is de default):'
-echo '  smtp.paqu.nl'
-echo '  smtp.paqu.nl:25'
-echo '  smtp.paqu.nl:465'
-echo '  smtp.paqu.nl:587'
+echo "  smtp.$maildomain"
+echo "  smtp.$maildomain:25"
+echo "  smtp.$maildomain:465"
+echo "  smtp.$maildomain:587"
 read -p 'SMTP-server: ' SMTPSERV
 if [ "$SMTPSERV" = "" ]
 then
@@ -231,8 +192,14 @@ then
     fi
 fi
 
+echo
+echo Contact-informatie die op de info-pagina van PaQu komt te staan.
+echo Dit moet een geldig stuk HTML zijn.
+echo "Voorbeeld: Bij vragen, mail naar <a href=\"mailto:$MAILFROM\">$MAILFROM.nl</a>"
+read -p 'Contact: ' CONTACT
+
 export CONTACT
-export URL
+export PORT
 export MAILFROM
 export SMTPSERV
 export SMTPUSER
@@ -240,15 +207,15 @@ export SMTPPASS
 
 perl -n -e '
 $contact  = $ENV{CONTACT};
-$url      = $ENV{URL};
+$port     = $ENV{PORT};
 $mailfrom = $ENV{MAILFROM};
 $smtpserv = $ENV{SMTPSERV};
 $smtpuser = $ENV{SMTPUSER};
 $smtppass = $ENV{SMTPPASS};
 $contact  =~ s/\\/\\\\/g;
 $contact  =~ s/\"/\\\"/g;
-$url      =~ s/\\/\\\\/g;
-$url      =~ s/\"/\\\"/g;
+$port     =~ s/\\/\\\\/g;
+$port     =~ s/\"/\\\"/g;
 $mailfrom =~ s/\\/\\\\/g;
 $mailfrom =~ s/\"/\\\"/g;
 $smtpserv =~ s/\\/\\\\/g;
@@ -261,7 +228,7 @@ $smtpserv =~ s/^[^:]+$/$&:25/;
 
 while (<>) {
     s/~CONTACT~/"$contact"/e;
-    s/~URL~/"$url"/e;
+    s/~PORT~/"$port"/e;
     s/~MAILFROM~/"$mailfrom"/e;
     s/~SMTPSERV~/"$smtpserv"/e;
     s/~SMTPUSER~/"$smtpuser"/e;
@@ -399,7 +366,7 @@ foliadays = 30
 #
 
 contact = "~CONTACT~"
-url = "~URL~"
+url = "http://localhost:~PORT~/"
 port = 9000
 default = "lassysmall alpinotreebank"
 mailfrom = "~MAILFROM~"
@@ -425,7 +392,9 @@ if [ "$os" = linux ]
 then
     echo localhost=127.0.0.1 >> paqu.bash
 else
-    echo 'localhost=`docker-machine ip my-docker-vm 2> /dev/null || echo 127.0.0.1`' >> paqu.bash
+    echo 'a=`docker-machine active 2> /dev/null`' >> paqu.bash
+    echo 'localhost=`docker-machine ip $a 2> /dev/null || echo 127.0.0.1`' >> paqu.bash
+    echo 'unset a' >> paqu.bash
 fi
 if [ "$os" = linux ]
 then
@@ -680,6 +649,10 @@ cat >> paqu.bash  <<'EOF'
 	echo "  env            - environment voor commando's gestart door PaQu"
 	echo "  vars           - interne status van PaQu"
 	echo
+	echo Voor meer informatie, kijk op:
+	echo
+	echo "  https://github.com/rug-compling/paqu-docker"
+	echo
 	;;
 esac
 EOF
@@ -711,6 +684,11 @@ De eerste keer duurt dat een paar minuten
 Voor een overzicht van andere commando's, run:
 
     ./paqu.bash
+
+
+Voor meer informatie, kijk op:
+
+    https://github.com/rug-compling/paqu-docker
 
 
 EOF
