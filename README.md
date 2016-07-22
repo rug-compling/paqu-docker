@@ -32,7 +32,16 @@ Zou gewoon moeten werken.
 
 **Docker for Windows**
 
-Ondersteuning voor *Docker for Windows* volgt later.
+Dit werkt momenteel (22 juli 2016) niet omdat het linken van een
+directory naar de docker container nog niet werkt.
+
+Gebruik `setup.cmd` i.p.v. `setup.bash`. Het resultaat is het script
+`paqu.cmd`.
+
+Als je `setup.cmd` draait wordt als eerste gevraagd een directory op te
+geven waar data opgeslagen moet worden. Het is mij niet bekend of je
+elke directory kunt gebruiken. Mogelijk moet je hier een directory
+opgeven die onder `C:\Users` zit.
 
 **Docker Toolbox**
 
