@@ -71,7 +71,7 @@ then
     fi
     if [ -f "$DATA/setup.toml" ]
     then
-	echo Er staat al en setup.toml in \'$DATA\'
+	echo Er staat al een setup.toml in \'$DATA\'
 	read -p 'Setup vervangen? (j/n) ' JN
 	case $JN in
 	    [jJyY]*)
@@ -170,19 +170,19 @@ echo "  smtp.$maildomain:587"
 read -p 'SMTP-server: ' SMTPSERV
 if [ "$SMTPSERV" = "" ]
 then
-    echo Mailserver ontbreekt
+    echo Smtp-server ontbreekt
     echo Setup afgebroken
     exit
 fi
 
 echo
-echo Is het nodig in te loggen op de mailserver voordat je er mail heen kunt zenden?
-echo Zo ja, geef dan je loginnaam voor de mailserver
+echo Is het nodig in te loggen op de smtp-server voordat je er mail heen kunt zenden?
+echo Zo ja, geef dan je loginnaam voor de smtp-server
 read -p 'Username: ' SMTPUSER
 if [ "$SMTPUSER" != "" ]
 then
     echo
-    echo Geef je password voor de mailserver
+    echo Geef je password voor de smtp-server
     read -p 'Password: ' SMTPPASS
     if [ "$SMTPPASS" = "" ]
     then
@@ -195,8 +195,15 @@ fi
 echo
 echo Contact-informatie die op de info-pagina van PaQu komt te staan.
 echo Dit moet een geldig stuk HTML zijn.
-echo "Voorbeeld: Bij vragen, mail naar <a href=\"mailto:$MAILFROM\">$MAILFROM.nl</a>"
+echo "Voorbeeld: Bij vragen, mail naar <a href=\"mailto:$MAILFROM\">$MAILFROM</a>"
 read -p 'Contact: ' CONTACT
+if [ "$CONTACT" = "" ]
+then
+    echo Contact-informatie ontbreekt
+    echo Setup afgebroken
+    exit
+fi
+
 
 export CONTACT
 export PORT
@@ -532,14 +539,14 @@ cat >> paqu.bash  <<'EOF'
 	docker stop mysql.paqu
 	docker rm mysql.paqu
 	;;
-    install_lassy)
+    install-lassy)
 	if [ ! -f "$dir/corpora/lassy.dact" ]
 	then
 	    echo
 	    echo Corpusbestand niet gevonden.
 	    echo
-	    echo Je kunt het corpus Lassy Klein verkrijgen bij de TST-Central:
-	    echo http://tst-centrale.org/producten/corpora/lassy-klein-corpus/6-66
+	    echo Je kunt het corpus Lassy Klein verkrijgen bij de TST-Centrale:
+	    echo http://tst-centrale.org/nl/tst-materialen/corpora/lassy-klein-corpus-detail
 	    echo
 	    echo Plaats het bestand lassy.dact in de directory \'$dir/corpora/\'
 	    echo en draai dit commando opnieuw.
@@ -647,7 +654,7 @@ cat >> paqu.bash  <<'EOF'
 	echo "  start          - start PaQu"
 	echo "  stop           - stop PaQu"
 	echo
-	echo "  install_lassy  - installeer het corpus Lassy Klein als globaal corpus"
+	echo "  install-lassy  - installeer het corpus Lassy Klein als globaal corpus"
 	echo
 	echo "  clean          - verwijder oude gebruikers zonder corpora"
 	echo "  rmcorpus corp  - verwijder corpus 'corp'"

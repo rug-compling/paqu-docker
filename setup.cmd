@@ -387,8 +387,8 @@ ECHO IF NOT EXIST "%%dir%%\corpora\lassy.dact" (>> paqu.cmd
 ECHO     ECHO.>> paqu.cmd
 ECHO     ECHO Corpusbestand niet gevonden.>> paqu.cmd
 ECHO     ECHO.>> paqu.cmd
-ECHO     ECHO Je kunt het corpus Lassy Klein verkrijgen bij de TST-Central:>> paqu.cmd
-ECHO     ECHO http://tst-centrale.org/producten/corpora/lassy-klein-corpus/6-66>> paqu.cmd
+ECHO     ECHO Je kunt het corpus Lassy Klein verkrijgen bij de TST-Centrale:>> paqu.cmd
+ECHO     ECHO http://tst-centrale.org/nl/tst-materialen/corpora/lassy-klein-corpus-detail>> paqu.cmd
 ECHO     ECHO.>> paqu.cmd
 ECHO     ECHO Plaats het bestand lassy.dact in de directory '%%dir%%\corpora'>> paqu.cmd
 ECHO     ECHO en draai dit commando opnieuw.>> paqu.cmd
