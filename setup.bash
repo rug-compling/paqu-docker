@@ -56,7 +56,7 @@ case "$DATA" in
 	;;
     *)
 	echo Je moet een absoluut path naar een directory opgeven
-	echo "'$DATA'" is geen absoluut path
+	echo \'$DATA\' is geen absoluut path
 	echo Setup afgebroken
 	exit
 	;;
@@ -65,13 +65,13 @@ if [ -e "$DATA" ]
 then
     if [ ! -d "$DATA" ]
     then
-	echo $DATA bestaat en is geen directory
+	echo \'$DATA\' bestaat en is geen directory
 	echo Setup afgebroken
 	exit
     fi
     if [ -f "$DATA/setup.toml" ]
     then
-	echo Er staat al en setup.toml in $DATA
+	echo Er staat al en setup.toml in \'$DATA\'
 	read -p 'Setup vervangen? (j/n) ' JN
 	case $JN in
 	    [jJyY]*)
@@ -85,15 +85,15 @@ then
 	shopt -s dotglob
 	if [ "`echo $DATA/*`" != "$DATA/"'*' ]
 	then
-	    echo De directory $DATA is niet leeg
-	    echo Als je echt deze directory wilt gebruiken, doe dan: touch $DATA/setup.toml
+	    echo De directory \'$DATA\' is niet leeg
+	    echo Als je echt deze directory wilt gebruiken, doe dan: touch \"$DATA/setup.toml\"
 	    echo Setup afgebroken
 	    exit
 	fi
     fi
 else
 
-    echo Directory $DATA bestaat niet
+    echo Directory \'$DATA\' bestaat niet
     read -p 'Directory aanmaken? (j/n) ' JN
     case $JN in
 	[jJyY]*)
@@ -107,10 +107,10 @@ else
 fi
 for i in corpora data folia mysql
 do
-    mkdir -p $DATA/$i
-    if [ ! -d $DATA/$i ]
+    mkdir -p "$DATA/$i"
+    if [ ! -d "$DATA/$i" ]
     then
-	echo Maken van directory $DATA/$i is mislukt
+	echo Maken van directory \'$DATA/$i\' is mislukt
 	echo Setup afgebroken
 	exit
     fi
@@ -125,9 +125,9 @@ then
 	    P=`dir="$DATA" perl -e "$script"`
 	    if [ "$P" != "" ]
 	    then
-		echo Het path "'$P'" moet voor iedereen executable zijn
+		echo Het path \'$P\' moet voor iedereen executable zijn
 		echo Doe eerst:
-		echo "  chmod a+x $P"
+		echo "  chmod a+x \"$P\""
 		echo Setup afgebroken
 		exit
 	    fi
@@ -235,7 +235,7 @@ while (<>) {
     s/~SMTPPASS~/"$smtppass"/e;
     print;
 }
-' > $DATA/setup.toml << 'EOF'
+' > "$DATA/setup.toml" << 'EOF'
 ##
 ## Dit bestand is in toml-formaat, zie: https://github.com/mojombo/toml
 ##
@@ -260,6 +260,21 @@ while (<>) {
 ## De default voor $PAQU is: $HOME/.paqu
 ##
 
+## Contact-informatie die verschijnt op de helppagina van PaQu.
+contact = "~CONTACT~"
+
+# De url waarop de server voor de buitenwereld beschikbaar is, zonodig met poortnummer.
+url = "http://localhost:~PORT~/"
+
+# Gegevens die gebruikt worden om mail naar gebruikers te sturen.
+# De waarde van 'smtpserv' is verplicht met een poortnummer.
+# Als 'smtpuser' en 'smtppass' leeg zijn is het een mailserver waarop
+# niet ingelogd hoeft te worden (door degene die `pqserve` draait).
+mailfrom = "~MAILFROM~"
+smtpserv = "~SMTPSERV~"
+smtpuser = "~SMTPUSER~"
+smtppass = "~SMTPPASS~"
+
 # Maximum aantal corpora dat gelijktijdig wordt verwerkt.
 # De verwerking van een corpus gebruikt ongeveer één processor voor 100%.
 maxjob = 2
@@ -280,8 +295,15 @@ maxwrd = 1000000
 maxdup = 10000
 
 # Timeout voor Alpino voor de bewerking van één regel. In seconden.
-# Dit heeft geen effect als er een Alpino-server wordt gebruikt.
+# Het effect is niet exact als er een Alpino-server wordt gebruikt.
 timeout = 900
+
+# URL van een Alpino-server.
+# Als dit leeg is wordt de lokale versie van Alpino gebruikt.
+# De server moet deze API implementeren: https://github.com/rug-compling/alpino-api
+# Een server kan in principe de data parallel verwerken, en dus veel
+# sneller zijn dan wanneer je Alpino lokaal gebruikt.
+alpinoserver = ""
 
 # Een willekeurige tekst die wordt gebruikt voor versleuteling bij het
 # inloggen.
@@ -365,14 +387,8 @@ foliadays = 30
 # LAAT ONDERSTAANDE WAARDES ONVERANDERD
 #
 
-contact = "~CONTACT~"
-url = "http://localhost:~PORT~/"
 port = 9000
 default = "lassysmall alpinotreebank"
-mailfrom = "~MAILFROM~"
-smtpserv = "~SMTPSERV~"
-smtpuser = "~SMTPUSER~"
-smtppass = "~SMTPPASS~"
 login = "$LOGIN"
 prefix = "pq"
 dact = true
@@ -385,7 +401,7 @@ EOF
 
 echo '#!/bin/bash' > paqu.bash
 echo >> paqu.bash
-echo dir=$DATA >> paqu.bash
+echo dir=\"$DATA\" >> paqu.bash
 echo port=$PORT >> paqu.bash
 echo 'mport=$(($port + 100))' >> paqu.bash
 if [ "$os" = linux ]
@@ -398,8 +414,8 @@ else
 fi
 if [ "$os" = linux ]
 then
-    echo uid=`stat -c %u $DATA/setup.toml` >> paqu.bash
-    echo gid=`stat -c %g $DATA/setup.toml` >> paqu.bash
+    echo uid=`stat -c %u "$DATA/setup.toml"` >> paqu.bash
+    echo gid=`stat -c %g "$DATA/setup.toml"` >> paqu.bash
 fi
 
 cat >> paqu.bash  <<'EOF'
@@ -435,7 +451,7 @@ then
 	docker run \
 	    -d \
 	    --name=mysql.paqu \
-	    -v $dir/mysql:/var/lib/mysql \
+	    -v "$dir"/mysql:/var/lib/mysql \
 	    -e MYSQL_ROOT_PASS=root \
 	    -e MYSQL_USER_DB=paqu \
 	    -e MYSQL_USER_NAME=paqu \
@@ -457,7 +473,7 @@ else
 	docker run \
 	    -d \
 	    --name=mysql.paqu \
-	    -v $dir/mysql:/var/lib/mysql \
+	    -v "$dir"/mysql:/var/lib/mysql \
 	    -e MYSQL_ROOT_PASSWORD=root \
 	    -e MYSQL_DATABASE=paqu \
 	    -e MYSQL_USER=paqu \
@@ -477,14 +493,14 @@ cat >> paqu.bash  <<'EOF'
 	echo MySQL is gestart
 
 	echo PaQu wordt gestart
-	rm -f $dir/ok $dir/fail $dir/message $dir/message.err
-	touch $dir/message
+	rm -f "$dir/ok" "$dir/fail" "$dir/message" "$dir/message.err"
+	touch "$dir/message"
 	docker run \
 	    -d \
 	    --link mysql.paqu:mysql \
 	    --name=paqu.serve \
 	    -p $port:9000 \
-	    -v $dir:/mod/data \
+	    -v "$dir":/mod/data \
 EOF
 if [ "$os" = linux ]
 then
@@ -494,21 +510,21 @@ EOF
 fi
 cat >> paqu.bash  <<'EOF'
 	    rugcompling/paqu:latest serve || exit
-	while [ ! -f $dir/ok -a ! -f $dir/fail ]
+	while [ ! -f "$dir/ok" -a ! -f "$dir/fail" ]
 	do
-	    cat $dir/message
+	    cat "$dir/message"
 	    sleep 1
 	done
-	if [ -f $dir/fail ]
+	if [ -f "$dir/fail" ]
 	then
-	    cat $dir/message.err
+	    cat "$dir/message.err"
 	    echo FOUT
 	else
 	    echo
 	    echo PaQu is gestart op http://$localhost:$port/
 	    echo
 	fi
-	rm -f $dir/ok $dir/fail $dir/message $dir/message.err
+	rm -f "$dir/ok" "$dir/fail" "$dir/message" "$dir/message.err"
 	;;
     stop)
 	docker stop paqu.serve
@@ -517,7 +533,7 @@ cat >> paqu.bash  <<'EOF'
 	docker rm mysql.paqu
 	;;
     install_lassy)
-	if [ ! -f $dir/corpora/lassy.dact ]
+	if [ ! -f "$dir/corpora/lassy.dact" ]
 	then
 	    echo
 	    echo Corpusbestand niet gevonden.
@@ -525,7 +541,7 @@ cat >> paqu.bash  <<'EOF'
 	    echo Je kunt het corpus Lassy Klein verkrijgen bij de TST-Central:
 	    echo http://tst-centrale.org/producten/corpora/lassy-klein-corpus/6-66
 	    echo
-	    echo Plaats het bestand lassy.dact in de directory $dir/corpora/
+	    echo Plaats het bestand lassy.dact in de directory \'$dir/corpora/\'
 	    echo en draai dit commando opnieuw.
 	    echo
 	    echo LET OP: Laat het bestand lassy.dact na het installeren staan.
@@ -536,7 +552,7 @@ cat >> paqu.bash  <<'EOF'
 	docker run \
 	    --link mysql.paqu:mysql \
 	    --rm \
-	    -v $dir:/mod/data \
+	    -v "$dir":/mod/data \
 EOF
 if [ "$os" = linux ]
 then
@@ -551,7 +567,7 @@ cat >> paqu.bash  <<'EOF'
 	docker run \
 	    --link mysql.paqu:mysql \
 	    --rm \
-	    -v $dir:/mod/data \
+	    -v "$dir":/mod/data \
 EOF
 if [ "$os" = linux ]
 then
@@ -606,7 +622,7 @@ cat >> paqu.bash  <<'EOF'
 	docker run \
 	    --rm \
 	    -i -t \
-	    -v $dir:/mod/data \
+	    -v "$dir":/mod/data \
 	    rugcompling/paqu:latest shell
 	;;
     admin)
