@@ -136,12 +136,10 @@ IF NOT DEFINED SMTPPASS (
 ECHO.
 ECHO Contact-informatie die op de info-pagina van PaQu komt te staan.
 ECHO Dit moet een geldig stuk HTML zijn.
-ECHO Voorbeeld: Bij vragen, mail naar ^^^<a href=^^^"mailto:%MAILFROM%^^^"^^^>%MAILFROM%^^^</a^^^>
-ECHO LET OP: Escape deze tekens met een ^^: ^^ ^" ^< ^>
+ECHO Voorbeeld: Bij vragen, mail naar ^<a href=^"mailto:%MAILFROM%^"^>%MAILFROM%^</a^>
 SET CONTACT=
 SET /p "CONTACT=Contact: "
-ECHO %CONTACT%
-REM CALL :Trim CONTACT %CONTACT%"
+:: CALL :Trim CONTACT %CONTACT%
 IF NOT DEFINED CONTACT (
     ECHO Contact-informatie ontbreekt
     ECHO Setup afgebroken
@@ -177,7 +175,7 @@ ECHO ## De default voor $PAQU is: $HOME/.paqu>> %out%
 ECHO ##>> %out%
 ECHO.>> %out%
 ECHO ## Contact-informatie die verschijnt op de helppagina van PaQu.>> %out%
-ECHO contact = '''%CONTACT%'''>> %out%
+ECHO contact = "%CONTACT:"=\"%">> %out%
 ECHO.>> %out%
 ECHO # De url waarop de server voor de buitenwereld beschikbaar is, zonodig met poortnummer.>> %out%
 ECHO url = "http://localhost:%PORT%/">> %out%
