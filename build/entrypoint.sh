@@ -6,6 +6,7 @@ function cleanexit {
     if [ "$cpid" != "" ]
     then
         kill $cpid
+	sleep 2
     fi
     exit
 }

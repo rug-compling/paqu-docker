@@ -192,20 +192,6 @@ then
     fi
 fi
 
-echo
-echo Contact-informatie die op de info-pagina van PaQu komt te staan.
-echo Dit moet een geldig stuk HTML zijn.
-echo "Voorbeeld: Bij vragen, mail naar <a href=\"mailto:$MAILFROM\">$MAILFROM</a>"
-read -p 'Contact: ' CONTACT
-if [ "$CONTACT" = "" ]
-then
-    echo Contact-informatie ontbreekt
-    echo Setup afgebroken
-    exit
-fi
-
-
-export CONTACT
 export PORT
 export MAILFROM
 export SMTPSERV
@@ -213,14 +199,11 @@ export SMTPUSER
 export SMTPPASS
 
 perl -n -e '
-$contact  = $ENV{CONTACT};
 $port     = $ENV{PORT};
 $mailfrom = $ENV{MAILFROM};
 $smtpserv = $ENV{SMTPSERV};
 $smtpuser = $ENV{SMTPUSER};
 $smtppass = $ENV{SMTPPASS};
-$contact  =~ s/\\/\\\\/g;
-$contact  =~ s/\"/\\\"/g;
 $port     =~ s/\\/\\\\/g;
 $port     =~ s/\"/\\\"/g;
 $mailfrom =~ s/\\/\\\\/g;
@@ -236,7 +219,7 @@ $smtpserv =~ s/^[^:]+$/$&:25/;
 while (<>) {
     s/~CONTACT~/"$contact"/e;
     s/~PORT~/"$port"/e;
-    s/~MAILFROM~/"$mailfrom"/e;
+    s/~MAILFROM~/"$mailfrom"/eg;
     s/~SMTPSERV~/"$smtpserv"/e;
     s/~SMTPUSER~/"$smtpuser"/e;
     s/~SMTPPASS~/"$smtppass"/e;
@@ -268,7 +251,7 @@ while (<>) {
 ##
 
 ## Contact-informatie die verschijnt op de helppagina van PaQu.
-contact = "~CONTACT~"
+contact = "Bij vragen, mail naar <a href=\"mailto:~MAILFROM~\">~MAILFROM~</a>"
 
 # De url waarop de server voor de buitenwereld beschikbaar is, zonodig met poortnummer.
 url = "http://localhost:~PORT~/"
