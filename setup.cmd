@@ -339,12 +339,12 @@ ECHO IF NOT "%%ERRORLEVEL%%"=="0" GOTO:EOF>> paqu.cmd
 ECHO :Loop>> paqu.cmd
 ECHO IF EXIST "%%dir%%\ok" GOTO EndLoop>> paqu.cmd
 ECHO IF EXIST "%%dir%%\fail" GOTO EndLoop>> paqu.cmd
-ECHO type "%%dir%%\message">> paqu.cmd
-ECHO ping -n 2 127.0.0.01 -w 1000 ^> NUL>> paqu.cmd
+ECHO TYPE "%%dir%%\message">> paqu.cmd
+ECHO ping -n 2 -w 1000 127.0.0.1 ^> NUL>> paqu.cmd
 ECHO GOTO Loop>> paqu.cmd
 ECHO :EndLoop>> paqu.cmd
 ECHO IF EXIST "%%dir%%\fail" (>> paqu.cmd
-ECHO     type "%%dir%%\message.err">> paqu.cmd
+ECHO     TYPE "%%dir%%\message.err">> paqu.cmd
 ECHO     ECHO FOUT>> paqu.cmd
 ECHO )>> paqu.cmd 
 ECHO IF EXIST "%%dir%%\ok" (>> paqu.cmd
