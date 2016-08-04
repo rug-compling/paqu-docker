@@ -199,6 +199,10 @@ ECHO # Timeout voor Alpino voor de bewerking van één regel. In seconden.>> %ou
 ECHO # Het effect is niet exact als er een Alpino-server wordt gebruikt.>> %out%
 ECHO timeout = 900>> %out%
 ECHO.>> %out%
+ECHO # Maximum aantal tokens per regel. Kies 0 voor geen maximum.>> %out%
+ECHO # Wanneer een Alpino-server gebruikt wordt kan die een lagere limiet opleggen.>> %out%
+ECHO maxtokens = 100>> %out%
+ECHO.>> %out%
 ECHO # URL van een Alpino-server.>> %out%
 ECHO # Als dit leeg is wordt de lokale versie van Alpino gebruikt.>> %out%
 ECHO # De server moet deze API implementeren: https://github.com/rug-compling/alpino-api>> %out%
