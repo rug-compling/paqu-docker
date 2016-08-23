@@ -27,8 +27,9 @@ RUN sed -e 's/^# en_US.UTF-8'/en_US.UTF-8'/' /etc/locale.gen > /etc/locale.gen.t
     mv /etc/locale.gen.tmp /etc/locale.gen && \
     locale-gen
 
-ENV PATH /mod/paqu/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ENV PATH /mod/paqu/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/mod/Alpino/bin:/mod/Alpino/Tokenization
 ENV PAQU /mod/data
+ENV ALPINO_HOME /mod/Alpino
 
 RUN cd /usr/local && \
     curl -s https://storage.googleapis.com/golang/go1.6.3.linux-amd64.tar.gz | tar vxzf - && \
