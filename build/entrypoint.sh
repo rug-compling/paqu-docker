@@ -42,8 +42,6 @@ case "$1" in
 	fi
 
 	echo PaQu wordt gestart > message
-	# cd: anders werk pqbugtest niet
-	cd /mod/paqu/bin
 	pqserve &
 	cpid=$!
 	for i in 1 2 3 4 5 6 7 8
@@ -51,14 +49,14 @@ case "$1" in
 	    sleep 1
 	    if [ "`curl -s http://127.0.0.1:9000/up 2> /dev/null`" = "up" ]
 	    then
-		touch /mod/data/ok
+		touch ok
 		break
 	    fi
 	done
-	if [ ! -f /mod/data/ok ]
+	if [ ! -f ok ]
 	then
-	    echo PaQu reageert niet > /mod/data/message.err
-	    touch /mod/data/fail
+	    echo PaQu reageert niet > message.err
+	    touch fail
 	    exit
 	fi
 	wait $cpid
