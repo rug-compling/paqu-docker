@@ -17,11 +17,13 @@ RUN apt-get update && apt-get install -y \
   flex \
   g++ \
   git \
+  less \
   libgraphviz-dev \
   libtk8.5 \
   locales \
   make \
-  nano
+  nano \
+  vim
 
 RUN sed -e 's/^# en_US.UTF-8'/en_US.UTF-8'/' /etc/locale.gen > /etc/locale.gen.tmp && \
     mv /etc/locale.gen.tmp /etc/locale.gen && \
