@@ -198,7 +198,7 @@ export SMTPSERV
 export SMTPUSER
 export SMTPPASS
 
-perl -n -e '
+perl -e '
 $port     = $ENV{PORT};
 $mailfrom = $ENV{MAILFROM};
 $smtpserv = $ENV{SMTPSERV};
