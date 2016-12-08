@@ -195,6 +195,14 @@ ECHO # Maximum aantal zinnen bij het maken van een nieuw corpus op basis van bes
 ECHO # Als de waarde 0 is geldt er geen limiet.>> %out%
 ECHO maxdup = 10000>> %out%
 ECHO.>> %out%
+ECHO # Geëxpandeerde dact-bestanden gebruiken?>> %out%
+ECHO # Als dit aan staat worden sommige XPATH-query's veel eenvoudiger omdat>> %out%
+ECHO # lege index-nodes worden aangevuld met data uit de corresponderende>> %out%
+ECHO # niet-lege index-nodes.>> %out%
+ECHO # Met deze optie neemt de data op schijf ongeveer twee keer zoveel>> %out%
+ECHO # ruimte in.>> %out%
+ECHO dactx = true>> %out%
+ECHO.>> %out%
 ECHO # Timeout voor Alpino voor de bewerking van één regel. In seconden.>> %out%
 ECHO # Het effect is niet exact als er een Alpino-server wordt gebruikt.>> %out%
 ECHO timeout = 900>> %out%

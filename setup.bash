@@ -284,6 +284,14 @@ maxwrd = 1000000
 # Als de waarde 0 is geldt er geen limiet.
 maxdup = 10000
 
+# Geëxpandeerde dact-bestanden gebruiken?
+# Als dit aan staat worden sommige XPATH-query's veel eenvoudiger omdat
+# lege index-nodes worden aangevuld met data uit de corresponderende
+# niet-lege index-nodes.
+# Met deze optie neemt de data op schijf ongeveer twee keer zoveel
+# ruimte in.
+dactx = true
+
 # Timeout voor Alpino voor de bewerking van één regel. In seconden.
 # Het effect is niet exact als er een Alpino-server wordt gebruikt.
 timeout = 900

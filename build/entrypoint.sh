@@ -74,6 +74,8 @@ case "$1" in
 	    echo Bestand niet gevonden: /mod/data/corpora/lassy.dact
 	    exit
 	fi
+	rm -f /mod/data/corpora/lassy.dactx
+	pqdactx /mod/data/corpora/lassy.dact /mod/data/corpora/lassy.dactx
 	echo /mod/data/corpora/lassy.dact | \
 		pqbuild -w -p '/mod/data/corpora/' lassysmall 'Lassy Klein' none 1
 	;;
