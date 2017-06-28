@@ -292,6 +292,13 @@ maxdup = 10000
 # ruimte in.
 dactx = true
 
+# Maximum aantal zinnen in een corpus dat beschikbaar is in het onderdeel SPOD.
+# Als de waarde 0 is geldt er geen limiet.
+maxspodlines = 1000000
+
+# Maximum aantal jobs dat gelijktijdig uitgevoerd kan worden voor het onderdeel SPOD.
+maxspodjob = 2
+
 # Timeout voor Alpino voor de bewerking van één regel. In seconden.
 # Het effect is niet exact als er een Alpino-server wordt gebruikt.
 timeout = 900

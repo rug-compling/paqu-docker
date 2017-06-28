@@ -203,6 +203,13 @@ ECHO # Met deze optie neemt de data op schijf ongeveer twee keer zoveel>> %out%
 ECHO # ruimte in.>> %out%
 ECHO dactx = true>> %out%
 ECHO.>> %out%
+ECHO # Maximum aantal zinnen in een corpus dat beschikbaar is in het onderdeel SPOD.>> %out%
+ECHO # Als de waarde 0 is geldt er geen limiet.>> %out%
+ECHO maxspodlines = 1000000>> %out%
+ECHO.>> %out%
+ECHO # Maximum aantal jobs dat gelijktijdig uitgevoerd kan worden voor het onderdeel SPOD.>> %out%
+ECHO maxspodjob = 2>> %out%
+ECHO.>> %out%
 ECHO # Timeout voor Alpino voor de bewerking van één regel. In seconden.>> %out%
 ECHO # Het effect is niet exact als er een Alpino-server wordt gebruikt.>> %out%
 ECHO timeout = 900>> %out%
