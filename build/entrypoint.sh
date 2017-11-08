@@ -42,7 +42,7 @@ case "$1" in
 	fi
 
 	echo PaQu wordt gestart > message
-	pqserve &
+	pqserve > pqserve.out 2> pqserve.err &
 	cpid=$!
 	for i in 1 2 3 4 5 6 7 8
 	do
