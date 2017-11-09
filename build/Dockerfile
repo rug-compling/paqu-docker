@@ -7,7 +7,7 @@
 #     docker push rugcompling/paqu:latest
 #
 
-FROM debian:9
+FROM ubuntu:xenial
 
 MAINTAINER Peter Kleiweg <p.c.j.kleiweg@rug.nl>
 
@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y \
   git \
   golang-go \
   less \
+  libcurl3 \
   libgraphviz-dev \
   libtk8.6 \
   locales \
@@ -26,9 +27,7 @@ RUN apt-get update && apt-get install -y \
   nano \
   vim
 
-RUN sed -e 's/^# en_US.UTF-8'/en_US.UTF-8'/' /etc/locale.gen > /etc/locale.gen.tmp && \
-    mv /etc/locale.gen.tmp /etc/locale.gen && \
-    locale-gen
+RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
 ENV PATH /mod/paqu/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/mod/Alpino/bin:/mod/Alpino/Tokenization
 ENV PAQU /mod/data
