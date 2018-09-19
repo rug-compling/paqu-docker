@@ -13,6 +13,14 @@ function cleanexit {
 
 case "$1" in
 
+    grep -q '^conllu' $PAQU/setup.toml
+    if [ $? != 0 ]
+    then
+	echo conllu = true > $PAQU/setup.toml.tmp
+	cat $PAQU/setup.toml >> $PAQU/setup.toml.tmp
+	mv $PAQU/setup.toml.tmp $PAQU/setup.toml
+    fi
+
     serve|pqserve)
 
 	trap cleanexit 1 2 3 9 15
