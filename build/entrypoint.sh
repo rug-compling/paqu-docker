@@ -22,9 +22,7 @@ case "$1" in
 	grep -q '^conllu' setup.toml
 	if [ $? != 0 ]
 	then
-	    echo conllu = true > setup.toml.tmp
-	    cat setup.toml >> setup.toml.tmp
-	    mv setup.toml.tmp setup.toml
+	    echo conllu = true >> setup.toml
 	fi
 
 	echo Wachten tot MySQL beschikbaar is > message
