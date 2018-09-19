@@ -316,6 +316,7 @@ ECHO sh = "/bin/sh">> %out%
 ECHO path = "/mod/paqu/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin">> %out%
 ECHO alpino = "/mod/Alpino">> %out%
 ECHO remote = false>> %out%
+ECHO conllu = true>> %out%
 ECHO.>> %out%
 
 

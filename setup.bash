@@ -405,6 +405,7 @@ sh = "/bin/sh"
 path = "/mod/paqu/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 alpino = "/mod/Alpino"
 remote = false
+conllu = true
 
 EOF
 
