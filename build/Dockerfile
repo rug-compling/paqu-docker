@@ -11,7 +11,7 @@ FROM ubuntu:bionic
 
 MAINTAINER Peter Kleiweg <p.c.j.kleiweg@rug.nl>
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
   ca-certificates \
   curl \
   flex \
