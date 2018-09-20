@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y \
   git \
   golang-go \
   less \
+  libcairo2-dev \
   libcurl3 \
   libgraphviz-dev \
   libtk8.6 \
