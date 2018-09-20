@@ -7,7 +7,7 @@
 #     docker push rugcompling/paqu:latest
 #
 
-FROM ubuntu:xenial
+FROM ubuntu:bionic
 
 MAINTAINER Peter Kleiweg <p.c.j.kleiweg@rug.nl>
 
