@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y \
   golang-go \
   less \
   libcairo2-dev \
-  libcurl3 \
+  libcurl4 \
   libgraphviz-dev \
   libtk8.6 \
   locales \
