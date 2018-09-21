@@ -19,7 +19,6 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
   git \
   golang-go \
   less \
-  libcairo2-dev \
   libcurl4 \
   libgraphviz-dev \
   libtk8.6 \
