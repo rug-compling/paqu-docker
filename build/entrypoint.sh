@@ -47,6 +47,8 @@ case "$1" in
 		pqbuild -w -p '/mod/corpora/' alpinotreebank 'Alpino Treebank' none 1
 	fi
 
+	pqudupgrade > pqudupgrade.out 2> pqudupgrade.err &
+
 	echo PaQu wordt gestart > message
 	pqserve > pqserve.out 2> pqserve.err &
 	cpid=$!
