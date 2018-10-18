@@ -21,7 +21,6 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
   less \
   libcurl4 \
   libgraphviz-dev \
-  libicu55 \
   libtk8.6 \
   locales \
   make \
