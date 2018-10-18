@@ -47,7 +47,7 @@ case "$1" in
 		pqbuild -w -p '/mod/corpora/' alpinotreebank 'Alpino Treebank' none 1
 	fi
 
-	pqudupgrade > pqudupgrade.out 2> pqudupgrade.err &
+	pqudupgrade . > pqudupgrade.out 2> pqudupgrade.err &
 
 	echo PaQu wordt gestart > message
 	pqserve > pqserve.out 2> pqserve.err &
@@ -82,8 +82,10 @@ case "$1" in
 	    echo Bestand niet gevonden: /mod/data/corpora/lassy.dact
 	    exit
 	fi
+	pqudep /mod/data/corpora/lassy.dact 2> /mod/data/corpora/lassy.conllu.err
 	rm -f /mod/data/corpora/lassy.dactx
 	pqdactx /mod/data/corpora/lassy.dact /mod/data/corpora/lassy.dactx
+	pqudep -v > /mod/data/corpora/lassy.conllu.version
 	echo /mod/data/corpora/lassy.dact | \
 		pqbuild -w -p '/mod/data/corpora/' lassysmall 'Lassy Klein' none 1
 	;;
