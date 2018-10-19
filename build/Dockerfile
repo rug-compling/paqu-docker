@@ -54,12 +54,14 @@ RUN echo OPTS = -v                          > /mod/paqu/src/Makefile.cfg && \
 RUN make -C /mod/paqu/src all
 
 ADD corpustest.go /mod/tools/
+ADD dactinfo.go /mod/tools/
 ADD dbwait.go /mod/tools/
 ADD init.sh /mod/etc/
 ADD entrypoint.sh /mod/etc
 RUN chmod 555 /mod/etc/entrypoint.sh && \
     cd /mod/tools && \
     GOPATH=/mod/paqu/_vendor go build corpustest.go && \
+    GOPATH=/mod/paqu/_vendor LIBRARY_PATH=/mod/dbxml/lib CGO_LDFLAGS="-Wl,-rpath=/mod/dbxml/lib" go build dactinfo.go && \
     GOPATH=/mod/paqu/_vendor go build dbwait.go
 
 EXPOSE 9000
