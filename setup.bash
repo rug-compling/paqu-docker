@@ -573,6 +573,37 @@ fi
 cat >> paqu.bash  <<'EOF'
 	    rugcompling/paqu:latest install_lassy
 	;;
+    ud-lassy)
+	if [ ! -f "$dir/corpora/lassy.dact" ]
+	then
+	    echo
+	    echo Corpusbestand niet gevonden.
+	    echo
+	    echo Je kunt het corpus Lassy Klein verkrijgen bij de TST-Centrale:
+	    echo http://tst-centrale.org/nl/tst-materialen/corpora/lassy-klein-corpus-detail
+	    echo
+	    echo Plaats het bestand lassy.dact in de directory \'$dir/corpora/\'
+	    echo en draai dit commando opnieuw.
+	    echo
+	    echo LET OP: Laat het bestand lassy.dact na het installeren staan.
+	    echo PaQu blijft dit bestand gebruiken.
+	    echo
+	    exit
+	fi
+	docker run \
+	    --link mysql.paqu:mysql \
+	    --rm \
+	    -v "$dir":/mod/data \
+EOF
+if [ "$os" = linux ]
+then
+    cat >> paqu.bash  <<'EOF'
+	    --user=$uid:$gid \
+EOF
+fi
+cat >> paqu.bash  <<'EOF'
+	    rugcompling/paqu:latest ud_lassy
+	;;
     clean|pqclean|rmcorpus|pqrmcorpus|rmuser|pqrmuser|setquota|pqsetquota|status|pqstatus)
 	docker run \
 	    --link mysql.paqu:mysql \
@@ -657,6 +688,7 @@ cat >> paqu.bash  <<'EOF'
 	echo "  start          - start PaQu"
 	echo "  stop           - stop PaQu"
 	echo
+	echo "  ud-lassy       - update of voeg universal dependencies toe aan het corpus Lassy Klein"
 	echo "  install-lassy  - installeer het corpus Lassy Klein als globaal corpus"
 	echo
 	echo "  clean          - verwijder oude gebruikers zonder corpora"

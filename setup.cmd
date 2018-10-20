@@ -407,6 +407,26 @@ ECHO docker run --link mysql.paqu:mysql --rm -v "%%udir%%:/mod/data" rugcompling
 ECHO GOTO:EOF>> paqu.cmd
 ECHO :EndInstallLassy>> paqu.cmd
 ECHO.>> paqu.cmd
+ECHO IF NOT "%%CMD%%"=="ud-lassy" GOTO EndUdLassy>> paqu.cmd
+ECHO IF NOT EXIST "%%dir%%\corpora\lassy.dact" (>> paqu.cmd
+ECHO     ECHO.>> paqu.cmd
+ECHO     ECHO Corpusbestand niet gevonden.>> paqu.cmd
+ECHO     ECHO.>> paqu.cmd
+ECHO     ECHO Je kunt het corpus Lassy Klein verkrijgen bij de TST-Centrale:>> paqu.cmd
+ECHO     ECHO http://tst-centrale.org/nl/tst-materialen/corpora/lassy-klein-corpus-detail>> paqu.cmd
+ECHO     ECHO.>> paqu.cmd
+ECHO     ECHO Plaats het bestand lassy.dact in de directory '%%dir%%\corpora'>> paqu.cmd
+ECHO     ECHO en draai dit commando opnieuw.>> paqu.cmd
+ECHO     ECHO.>> paqu.cmd
+ECHO     ECHO LET OP: Laat het bestand lassy.dact na het installeren staan.>> paqu.cmd
+ECHO     ECHO PaQu blijft dit bestand gebruiken.>> paqu.cmd
+ECHO     ECHO.>> paqu.cmd
+ECHO     GOTO:EOF>> paqu.cmd
+ECHO )>> paqu.cmd
+ECHO docker run --link mysql.paqu:mysql --rm -v "%%udir%%:/mod/data" rugcompling/paqu:latest ud_lassy>> paqu.cmd
+ECHO GOTO:EOF>> paqu.cmd
+ECHO :EndUdLassy>> paqu.cmd
+ECHO.>> paqu.cmd
 ECHO SET c=no>> paqu.cmd
 ECHO FOR %%%%a in ("clean" "pqclean" "rmcorpus" "pqrmcorpus" "rmuser" "pqrmuser" "setquota" "pqsetquota" "status" "pqstatus") DO IF "%%CMD%%"==%%%%a SET c=yes>> paqu.cmd
 ECHO IF "%%c%%"=="no" GOTO EndMultiA>> paqu.cmd
@@ -473,6 +493,7 @@ ECHO ECHO.>> paqu.cmd
 ECHO ECHO   start          - start PaQu>> paqu.cmd
 ECHO ECHO   stop           - stop PaQu>> paqu.cmd
 ECHO ECHO.>> paqu.cmd
+ECHO ECHO   ud             - update of voeg universal dependencies toe aan het corpus Lassy Klein>> paqu.cmd
 ECHO ECHO   install-lassy  - installeer het corpus Lassy Klein als globaal corpus>> paqu.cmd
 ECHO ECHO.>> paqu.cmd
 ECHO ECHO   clean          - verwijder oude gebruikers zonder corpora>> paqu.cmd

@@ -83,19 +83,8 @@ case "$1" in
 	    exit
 	fi
 
-	v="`pqudep -v`"
-	t="`/mod/tools/dactinfo $v /mod/data/corpora/lassy.dact`"
-	case "$t" in
-	    *DACT_ERROR*)
-		echo $t
-		exit
-		;;
-	    *OLD_DACTX*)
-		rm -f /mod/data/corpora/lassy.dactx
-		pqdactx /mod/data/corpora/lassy.dact /mod/data/corpora/lassy.dactx
-		;;
-	esac
-
+	pqdactx /mod/data/corpora/lassy.dact /mod/data/corpora/lassy.dactx.tmp
+	mv /mod/data/corpora/lassy.dactx.tmp /mod/data/corpora/lassy.dactx
 	echo /mod/data/corpora/lassy.dact | \
 		pqbuild -w -p '/mod/data/corpora/' lassysmall 'Lassy Klein' none 1
 	;;
@@ -107,41 +96,13 @@ case "$1" in
 	    exit
 	fi
 
-	v="`pqudep -v`"
-	t="`/mod/tools/dactinfo $v /mod/data/corpora/lassy.dact`"
-	case "$t" in
-	    *DACT_ERROR*)
-		echo $t
-		exit
-		;;
-	esac
-
-	case "$t" in
-	    *DACT_HAS_NO_UD*|*DACT_HAS_OLD_UD*)
-		pqudep -o /mod/data/corpora/lassy.dact 2> /mod/data/corpora/lassy.conllu.err
-		;;
-	    *)
-		echo /mod/data/corpora/lassy.dact is up-to-date
-		;;
-	esac
-
-	t2="`/mod/tools/dactinfo $v /mod/data/corpora/lassy.dact`"
-	case "$t2" in
-	    *OLD_DACTX*)
-		rm -f /mod/data/corpora/lassy.dactx
-		pqdactx /mod/data/corpora/lassy.dact /mod/data/corpora/lassy.dactx
-		;;
-	    *)
-		echo /mod/data/corpora/lassy.dactx is up-to-date
-		;;
-	esac
-
-	case "$t" in
-	    *DACT_HAS_NO_UD*|*DACT_HAS_OLD_UD*)
-		pqudep -v > /mod/data/corpora/lassy.conllu.version
-		;;
-	esac
-
+	pqudep -o /mod/data/corpora/lassy.dact 2> /mod/data/corpora/lassy.conllu.err
+	if [ -f /mod/data/corpora/lassy.dactx ]
+	then
+	    pqdactx /mod/data/corpora/lassy.dact /mod/data/corpora/lassy.dactx.tmp
+	    mv /mod/data/corpora/lassy.dactx.tmp /mod/data/corpora/lassy.dactx
+	fi
+	pqudep -v > /mod/data/corpora/lassy.conllu.version
 	;;
 
     clean|pqclean)
