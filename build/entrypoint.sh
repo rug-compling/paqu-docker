@@ -44,7 +44,7 @@ case "$1" in
 	    pqinit
 	    echo Het corpus Alpino Treebank wordt ingevoerd > message
 	    echo /mod/corpora/cdb.dact | \
-		pqbuild -w -p '/mod/corpora/' alpinotreebank 'Alpino Treebank' none 1
+		pqbuild -w -p '/mod/corpora/' alpinotreebank 'Alpino Treebank' manual 1
 	fi
 
 	pqudupgrade . > pqudupgrade.out 2> pqudupgrade.err &
@@ -86,7 +86,7 @@ case "$1" in
 	pqdactx /mod/data/corpora/lassy.dact /mod/data/corpora/lassy.dactx.tmp
 	mv /mod/data/corpora/lassy.dactx.tmp /mod/data/corpora/lassy.dactx
 	echo /mod/data/corpora/lassy.dact | \
-		pqbuild -w -p '/mod/data/corpora/' lassysmall 'Lassy Klein' none 1
+		pqbuild -w -p '/mod/data/corpora/' lassysmall 'Lassy Klein' manual 1
 	;;
 
     ud_lassy)
