@@ -591,7 +591,6 @@ cat >> paqu.bash  <<'EOF'
 	    exit
 	fi
 	docker run \
-	    --link mysql.paqu:mysql \
 	    --rm \
 	    -v "$dir":/mod/data \
 EOF

@@ -423,7 +423,7 @@ ECHO     ECHO PaQu blijft dit bestand gebruiken.>> paqu.cmd
 ECHO     ECHO.>> paqu.cmd
 ECHO     GOTO:EOF>> paqu.cmd
 ECHO )>> paqu.cmd
-ECHO docker run --link mysql.paqu:mysql --rm -v "%%udir%%:/mod/data" rugcompling/paqu:latest ud_lassy>> paqu.cmd
+ECHO docker run --rm -v "%%udir%%:/mod/data" rugcompling/paqu:latest ud_lassy>> paqu.cmd
 ECHO GOTO:EOF>> paqu.cmd
 ECHO :EndUdLassy>> paqu.cmd
 ECHO.>> paqu.cmd
