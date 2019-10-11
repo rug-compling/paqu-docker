@@ -62,6 +62,8 @@ RUN chmod 555 /mod/etc/entrypoint.sh && \
     GOPATH=/mod/paqu/_vendor go build corpustest.go && \
     GOPATH=/mod/paqu/_vendor go build dbwait.go
 
+ENV LD_LIBRARY_PATH=/mod/Alpino/create_bin/extralibs/boost
+
 EXPOSE 9000
 
 ENTRYPOINT ["/mod/etc/entrypoint.sh"]
