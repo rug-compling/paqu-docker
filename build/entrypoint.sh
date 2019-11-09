@@ -35,7 +35,7 @@ case "$1" in
 	rm message.err
 
 	redo=0
-	if [ ! -x /mod/data/data/alpinotreebank/cdbversion ]
+	if [ ! -f /mod/data/data/alpinotreebank/cdbversion ]
 	then
 	    redo=1
 	elif [ "$(< /mod/data/data/alpinotreebank/cdbversion)" != "$(< /mod/corpora/cdbversion)" ]
