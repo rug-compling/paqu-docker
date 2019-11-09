@@ -41,6 +41,8 @@ RUN rm /index && mkdir -p /mod && cd /mod && \
     curl -s http://www.let.rug.nl/alfa/docker/paqu/corpora.tar.gz | tar vxzf - && \
     curl -s http://www.let.rug.nl/alfa/docker/paqu/dbxml.tar.gz | tar vxzf -
 
+ADD cdbversion /mod/corpora
+
 ADD https://github.com/rug-compling/paqu/commits/master.atom /master
 RUN cd /mod && git clone https://github.com/rug-compling/paqu && rm /master
 

@@ -34,17 +34,28 @@ case "$1" in
 	fi
 	rm message.err
 
-	if [ "`/mod/tools/corpustest alpinotreebank`" = "ok" ]
+	redo=0
+	if [ ! -x /mod/data/data/alpinotreebank/cdbversion ]
+	then
+	    redo=1
+	elif [ "$(< /mod/data/data/alpinotreebank/cdbversion)" != "$(< /mod/corpora/cdbversion)" ]
+	then
+	    redo=1
+	fi
+
+	if [ $redo = 0 -a "`/mod/tools/corpustest alpinotreebank`" = "ok" ]
 	then
 	    echo De database wordt bijgewerkt naar de huidige versie > message
 	    pqupgrade
 	else
-	    mkdir -p /mod/data/data
+	    pqrmcorpus alpinotreebank
+	    mkdir -p /mod/data/data/alpinotreebank
 	    echo De database wordt klaargemaakt > message
 	    pqinit
 	    echo Het corpus Alpino Treebank wordt ingevoerd > message
 	    echo /mod/corpora/cdb.dact | \
 		pqbuild -w -p '/mod/corpora/' alpinotreebank 'Alpino Treebank' manual 1
+	    cp /mod/corpora/cdbversion /mod/data/data/alpinotreebank/cdbversion
 	fi
 
 	pqudupgrade . > pqudupgrade.out 2> pqudupgrade.err &
