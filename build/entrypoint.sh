@@ -54,7 +54,7 @@ case "$1" in
 	    pqinit
 	    echo Het corpus Alpino Treebank wordt ingevoerd > message
 	    echo /mod/corpora/cdb.dact | \
-		pqbuild -w -p '/mod/corpora/' alpinotreebank 'Alpino Treebank' manual 1
+		pqbuild -D 2020-01-16 -w -p '/mod/corpora/' alpinotreebank 'Alpino Treebank' manual 1
 	    cp /mod/corpora/cdbversion /mod/data/data/alpinotreebank/cdbversion
 	fi
 
