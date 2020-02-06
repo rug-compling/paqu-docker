@@ -34,6 +34,26 @@ case "$1" in
 	fi
 	rm message.err
 
+	clear=0
+	if [ -d /mod/data/data/alpinotreebank ]
+	then
+	    if [ ! -f /mod/data/data/alpinotreebank/cdbversion ]
+	    then
+		clear=1
+	    elif [ ! -f /mod/data/data/alpinotreebank/cdbdate ]
+	    then
+		clear=1
+	    elif  [ "$(< /mod/data/data/alpinotreebank/cdbdate)" != "$(< /mod/corpora/cdbdate)" ]
+	    then
+		clear=1
+	    fi
+	fi
+	if [ $clear = 1 ]
+	then
+	    pqrmcorpus alpinotreebank
+	    rm -fr /mod/data/data/alpinotreebank
+	fi
+
 	redo=0
 	if [ ! -f /mod/data/data/alpinotreebank/cdbversion ]
 	then
@@ -54,9 +74,10 @@ case "$1" in
 	    pqinit
 	    echo Het corpus Alpino Treebank wordt ingevoerd > message
 	    echo /mod/corpora/cdb.dact | \
-		pqbuild -D 2020-01-16 -w -p '/mod/corpora/' alpinotreebank 'Alpino Treebank' manual 1
-	    cp /mod/corpora/cdbversion /mod/data/data/alpinotreebank/cdbversion
+		pqbuild -D $(< /mod/corpora/cdbdate ) -w -p '/mod/corpora/' alpinotreebank 'Alpino Treebank' manual 1
 	fi
+	cp /mod/corpora/cdbdate /mod/data/data/alpinotreebank/cdbdate
+	cp /mod/corpora/cdbversion /mod/data/data/alpinotreebank/cdbversion
 
 	pqudupgrade . > pqudupgrade.out 2> pqudupgrade.err &
 
