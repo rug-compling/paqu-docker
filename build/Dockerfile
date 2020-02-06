@@ -54,12 +54,14 @@ RUN echo OPTS = -v                          > /mod/paqu/src/Makefile.cfg && \
 RUN make -C /mod/paqu/src all
 
 ADD corpustest.go /mod/tools/
+ADD dbtest.go /mod/tools/
 ADD dbwait.go /mod/tools/
 ADD init.sh /mod/etc/
 ADD entrypoint.sh /mod/etc
 RUN chmod 555 /mod/etc/entrypoint.sh && \
     cd /mod/tools && \
     GOPATH=/mod/paqu/_vendor go build corpustest.go && \
+    GOPATH=/mod/paqu/_vendor go build dbtest.go && \
     GOPATH=/mod/paqu/_vendor go build dbwait.go
 
 ENV LD_LIBRARY_PATH=/mod/Alpino/create_bin/extralibs/boost

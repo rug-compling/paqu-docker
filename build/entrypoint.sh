@@ -34,6 +34,15 @@ case "$1" in
 	fi
 	rm message.err
 
+	if [ "`/mod/tools/dbtest`" = "ok" ]
+	then
+	    echo De database wordt bijgewerkt naar de huidige versie > message
+	    pqupgrade
+	else
+	    echo De database wordt klaargemaakt > message
+	    pqinit
+	fi
+
 	redo=0
 	if [ ! -f /mod/data/data/alpinotreebank/cdbdate ]
 	then
@@ -53,10 +62,6 @@ case "$1" in
 	    pqrmcorpus alpinotreebank
 	fi
 
-	echo De database wordt klaargemaakt > message
-	pqinit
-	echo De database wordt bijgewerkt naar de huidige versie > message
-	pqupgrade
 	if [ "`/mod/tools/corpustest alpinotreebank`" != "ok" ]
 	then
 	    echo Het corpus Alpino Treebank wordt ingevoerd > message
