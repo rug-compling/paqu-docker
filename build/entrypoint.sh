@@ -34,50 +34,37 @@ case "$1" in
 	fi
 	rm message.err
 
-	clear=0
-	if [ -d /mod/data/data/alpinotreebank ]
-	then
-	    if [ ! -f /mod/data/data/alpinotreebank/cdbversion ]
-	    then
-		clear=1
-	    elif [ ! -f /mod/data/data/alpinotreebank/cdbdate ]
-	    then
-		clear=1
-	    elif  [ "$(< /mod/data/data/alpinotreebank/cdbdate)" != "$(< /mod/corpora/cdbdate)" ]
-	    then
-		clear=1
-	    fi
-	fi
-	if [ $clear = 1 ]
-	then
-	    pqrmcorpus alpinotreebank
-	    rm -fr /mod/data/data/alpinotreebank
-	fi
-
 	redo=0
-	if [ ! -f /mod/data/data/alpinotreebank/cdbversion ]
+	if [ ! -f /mod/data/data/alpinotreebank/cdbdate ]
+	then
+	    redo=1
+	elif [ "$(< /mod/data/data/alpinotreebank/cdbdate)" != "$(< /mod/corpora/cdbdate)" ]
+	then
+	    redo=1
+	elif [ ! -f /mod/data/data/alpinotreebank/cdbversion ]
 	then
 	    redo=1
 	elif [ "$(< /mod/data/data/alpinotreebank/cdbversion)" != "$(< /mod/corpora/cdbversion)" ]
 	then
 	    redo=1
 	fi
-
-	if [ $redo = 0 -a "`/mod/tools/corpustest alpinotreebank`" = "ok" ]
+	if [ $redo = 1 ]
 	then
-	    echo De database wordt bijgewerkt naar de huidige versie > message
-	    pqupgrade
-	else
 	    pqrmcorpus alpinotreebank
-	    mkdir -p /mod/data/data/alpinotreebank
-	    echo De database wordt klaargemaakt > message
-	    pqinit
+	fi
+
+	echo De database wordt klaargemaakt > message
+	pqinit
+	echo De database wordt bijgewerkt naar de huidige versie > message
+	pqupgrade
+	if [ "`/mod/tools/corpustest alpinotreebank`" != "ok" ]
+	then
 	    echo Het corpus Alpino Treebank wordt ingevoerd > message
 	    echo /mod/corpora/cdb.dact | \
 		pqbuild -D $(< /mod/corpora/cdbdate ) -w -p '/mod/corpora/' alpinotreebank 'Alpino Treebank' manual 1
+	    mkdir -p /mod/data/data/alpinotreebank
+	    cp /mod/corpora/cdb{date,version} /mod/data/data/alpinotreebank
 	fi
-	cp /mod/corpora/cdbdate /mod/data/data/alpinotreebank/cdbdate
-	cp /mod/corpora/cdbversion /mod/data/data/alpinotreebank/cdbversion
 
 	pqudupgrade . > pqudupgrade.out 2> pqudupgrade.err &
 
