@@ -1,4 +1,4 @@
 #!/bin/sh
 set -x
-docker push rugcompling/paqu:latest
+docker push registry.webhosting.rug.nl/compling/paqu:latest
 

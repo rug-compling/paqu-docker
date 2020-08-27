@@ -519,7 +519,7 @@ then
 EOF
 fi
 cat >> paqu.bash  <<'EOF'
-	    rugcompling/paqu:latest serve || exit
+	    registry.webhosting.rug.nl/compling/paqu:latest serve || exit
 	while [ ! -f "$dir/ok" -a ! -f "$dir/fail" ]
 	do
 	    cat "$dir/message"
@@ -571,7 +571,7 @@ then
 EOF
 fi
 cat >> paqu.bash  <<'EOF'
-	    rugcompling/paqu:latest install_lassy
+	    registry.webhosting.rug.nl/compling/paqu:latest install_lassy
 	;;
     ud-lassy)
 	if [ ! -f "$dir/corpora/lassy.dact" ]
@@ -601,7 +601,7 @@ then
 EOF
 fi
 cat >> paqu.bash  <<'EOF'
-	    rugcompling/paqu:latest ud_lassy
+	    registry.webhosting.rug.nl/compling/paqu:latest ud_lassy
 	;;
     clean|pqclean|rmcorpus|pqrmcorpus|rmuser|pqrmuser|setquota|pqsetquota|status|pqstatus)
 	docker run \
@@ -616,7 +616,7 @@ then
 EOF
 fi
 cat >> paqu.bash  <<'EOF'
-	    rugcompling/paqu:latest "$@"
+	    registry.webhosting.rug.nl/compling/paqu:latest "$@"
 	;;
     up)
 	curl http://$localhost:$port/up
@@ -646,7 +646,7 @@ EOF
 fi
 cat >> paqu.bash  <<'EOF'
 	docker pull phpmyadmin/phpmyadmin
-	docker pull rugcompling/paqu:latest
+	docker pull registry.webhosting.rug.nl/compling/paqu:latest
 	echo PaQu moet opnieuw gestart worden
 	;;
     upgrade)
@@ -655,7 +655,7 @@ cat >> paqu.bash  <<'EOF'
 	docker rm paqu.serve
 	docker stop mysql.paqu
 	docker rm mysql.paqu
-	docker pull rugcompling/paqu:latest
+	docker pull registry.webhosting.rug.nl/compling/paqu:latest
 	echo PaQu moet opnieuw gestart worden
 	;;
     shell)
@@ -663,7 +663,7 @@ cat >> paqu.bash  <<'EOF'
 	    --rm \
 	    -i -t \
 	    -v "$dir":/mod/data \
-	    rugcompling/paqu:latest shell
+	    registry.webhosting.rug.nl/compling/paqu:latest shell
 	;;
     admin)
 	echo

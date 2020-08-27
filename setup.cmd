@@ -354,7 +354,7 @@ ECHO DEL "%%dir%%\fail" 2^> NUL>> paqu.cmd
 ECHO DEL "%%dir%%\message" 2^> NUL>> paqu.cmd
 ECHO DEL "%%dir%%\message.err" 2^> NUL>> paqu.cmd
 ECHO ECHO. ^> "%%dir%%/message">> paqu.cmd
-ECHO docker run -d --link mysql.paqu:mysql --name=paqu.serve -p %%port%%:9000 -v "%%udir%%:/mod/data" rugcompling/paqu:latest serve>> paqu.cmd
+ECHO docker run -d --link mysql.paqu:mysql --name=paqu.serve -p %%port%%:9000 -v "%%udir%%:/mod/data" registry.webhosting.rug.nl/compling/paqu:latest serve>> paqu.cmd
 ECHO IF NOT "%%ERRORLEVEL%%"=="0" GOTO:EOF>> paqu.cmd
 ECHO :Loop>> paqu.cmd
 ECHO IF EXIST "%%dir%%\ok" GOTO EndLoop>> paqu.cmd
@@ -403,7 +403,7 @@ ECHO     ECHO PaQu blijft dit bestand gebruiken.>> paqu.cmd
 ECHO     ECHO.>> paqu.cmd
 ECHO     GOTO:EOF>> paqu.cmd
 ECHO )>> paqu.cmd
-ECHO docker run --link mysql.paqu:mysql --rm -v "%%udir%%:/mod/data" rugcompling/paqu:latest install_lassy>> paqu.cmd
+ECHO docker run --link mysql.paqu:mysql --rm -v "%%udir%%:/mod/data" registry.webhosting.rug.nl/compling/paqu:latest install_lassy>> paqu.cmd
 ECHO GOTO:EOF>> paqu.cmd
 ECHO :EndInstallLassy>> paqu.cmd
 ECHO.>> paqu.cmd
@@ -423,14 +423,14 @@ ECHO     ECHO PaQu blijft dit bestand gebruiken.>> paqu.cmd
 ECHO     ECHO.>> paqu.cmd
 ECHO     GOTO:EOF>> paqu.cmd
 ECHO )>> paqu.cmd
-ECHO docker run --rm -v "%%udir%%:/mod/data" rugcompling/paqu:latest ud_lassy>> paqu.cmd
+ECHO docker run --rm -v "%%udir%%:/mod/data" registry.webhosting.rug.nl/compling/paqu:latest ud_lassy>> paqu.cmd
 ECHO GOTO:EOF>> paqu.cmd
 ECHO :EndUdLassy>> paqu.cmd
 ECHO.>> paqu.cmd
 ECHO SET c=no>> paqu.cmd
 ECHO FOR %%%%a in ("clean" "pqclean" "rmcorpus" "pqrmcorpus" "rmuser" "pqrmuser" "setquota" "pqsetquota" "status" "pqstatus") DO IF "%%CMD%%"==%%%%a SET c=yes>> paqu.cmd
 ECHO IF "%%c%%"=="no" GOTO EndMultiA>> paqu.cmd
-ECHO docker run --link mysql.paqu:mysql --rm -v "%%udir%%:/mod/data" rugcompling/paqu:latest %%ALL%%>> paqu.cmd
+ECHO docker run --link mysql.paqu:mysql --rm -v "%%udir%%:/mod/data" registry.webhosting.rug.nl/compling/paqu:latest %%ALL%%>> paqu.cmd
 ECHO GOTO:EOF>> paqu.cmd
 ECHO :EndMultiA>> paqu.cmd
 ECHO.>> paqu.cmd
@@ -454,7 +454,7 @@ ECHO docker stop mysql.paqu>> paqu.cmd
 ECHO docker rm mysql.paqu>> paqu.cmd
 ECHO docker pull mysql:5.5>> paqu.cmd
 ECHO docker pull phpmyadmin/phpmyadmin>> paqu.cmd
-ECHO docker pull rugcompling/paqu:latest>> paqu.cmd
+ECHO docker pull registry.webhosting.rug.nl/compling/paqu:latest>> paqu.cmd
 ECHO ECHO PaQu moet opnieuw gestart worden>> paqu.cmd
 ECHO GOTO:EOF>> paqu.cmd
 ECHO :EndUpgradeAll>> paqu.cmd
@@ -465,13 +465,13 @@ ECHO docker stop paqu.serve>> paqu.cmd
 ECHO docker rm paqu.serve>> paqu.cmd
 ECHO docker stop mysql.paqu>> paqu.cmd
 ECHO docker rm mysql.paqu>> paqu.cmd
-ECHO docker pull rugcompling/paqu:latest>> paqu.cmd
+ECHO docker pull registry.webhosting.rug.nl/compling/paqu:latest>> paqu.cmd
 ECHO ECHO PaQu moet opnieuw gestart worden>> paqu.cmd
 ECHO GOTO:EOF>> paqu.cmd
 ECHO :EndUpgradeOne>> paqu.cmd
 ECHO.>> paqu.cmd
 ECHO IF NOT "%%CMD%%"=="shell" GOTO EndShell>> paqu.cmd
-ECHO docker run --rm -i -t -v "%%udir%%:/mod/data" rugcompling/paqu:latest shell>> paqu.cmd
+ECHO docker run --rm -i -t -v "%%udir%%:/mod/data" registry.webhosting.rug.nl/compling/paqu:latest shell>> paqu.cmd
 ECHO GOTO:EOF>> paqu.cmd
 ECHO :EndShell>> paqu.cmd
 ECHO.>> paqu.cmd
