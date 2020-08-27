@@ -1,10 +1,10 @@
 #
 # PaQu in Docker
 #
-# To build and push to docker hub:
+# To build and push to repositoryb:
 #
-#     docker build -t rugcompling/paqu:latest .
-#     docker push rugcompling/paqu:latest
+#     docker build -t registry.webhosting.rug.nl/compling/paqu:latest .
+#     docker push registry.webhosting.rug.nl/compling/paqu:latest
 #
 
 FROM ubuntu:bionic
