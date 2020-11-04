@@ -1,7 +1,7 @@
 #
 # PaQu in Docker
 #
-# To build and push to repositoryb:
+# To build and push to repository:
 #
 #     docker build -t registry.webhosting.rug.nl/compling/paqu:latest .
 #     docker push registry.webhosting.rug.nl/compling/paqu:latest
