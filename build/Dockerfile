@@ -62,6 +62,7 @@ ADD init.sh /mod/etc/
 ADD entrypoint.sh /mod/etc
 RUN chmod 555 /mod/etc/entrypoint.sh && \
     cd /mod/tools && \
+    cp /mod/paqu/go.* . \
     go build corpustest.go && \
     go build dbtest.go && \
     go build dbwait.go
