@@ -30,7 +30,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 
 RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
-ENV PATH /mod/paqu/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/mod/Alpino/bin:/mod/Alpino/Tokenization
+ENV PATH /mod/paqu/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/mod/Alpino/bin:/mod/Alpino/Tokenization:/usr/lib/go-1.13/bin
 ENV PAQU /mod/data
 ENV ALPINO_HOME /mod/Alpino
 
@@ -62,9 +62,9 @@ ADD init.sh /mod/etc/
 ADD entrypoint.sh /mod/etc
 RUN chmod 555 /mod/etc/entrypoint.sh && \
     cd /mod/tools && \
-    GOPATH=/mod/paqu/_vendor go build corpustest.go && \
-    GOPATH=/mod/paqu/_vendor go build dbtest.go && \
-    GOPATH=/mod/paqu/_vendor go build dbwait.go
+    go build corpustest.go && \
+    go build dbtest.go && \
+    go build dbwait.go
 
 ENV LD_LIBRARY_PATH=/mod/Alpino/create_bin/extralibs/boost
 
