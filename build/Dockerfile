@@ -63,9 +63,9 @@ ADD entrypoint.sh /mod/etc
 RUN chmod 555 /mod/etc/entrypoint.sh && \
     cd /mod/tools && \
     cp /mod/paqu/go.* . \
-    go build corpustest.go && \
-    go build dbtest.go && \
-    go build dbwait.go
+    go build -o corpustest corpustest.go && \
+    go build -o dbtest dbtest.go && \
+    go build -o dbwait dbwait.go
 
 ENV LD_LIBRARY_PATH=/mod/Alpino/create_bin/extralibs/boost
 
