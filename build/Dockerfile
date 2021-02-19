@@ -17,7 +17,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
   flex \
   g++ \
   git \
-  golang-go \
+  golang-1.13-go \
   less \
   libcurl4 \
   libgraphviz-dev \
