@@ -47,10 +47,12 @@ RUN cd /mod && git clone https://github.com/rug-compling/paqu && rm /master
 # Add libraries to standard path
 RUN ldconfig /mod/dbxml/lib /mod/Alpino/boost
 
-RUN echo OPTS = -v                          > /mod/paqu/src/Makefile.cfg && \
-    echo export GOPATH=/mod/paqu/_vendor    >> /mod/paqu/src/Makefile.cfg && \
-    echo export CPATH=/mod/dbxml/include    >> /mod/paqu/src/Makefile.cfg && \
-    echo export LIBRARY_PATH=/mod/dbxml/lib >> /mod/paqu/src/Makefile.cfg
+RUN echo OPTS = -v                                                      > /mod/paqu/src/Makefile.cfg && \
+    echo GO = go                                                       >> /mod/paqu/src/Makefile.cfg && \
+    echo export CGO_CFLAGS=-I/mod/dbxml/include                        >> /mod/paqu/src/Makefile.cfg && \
+    echo export CGO_CXXFLAGS=-I/mod/dbxml/include                      >> /mod/paqu/src/Makefile.cfg && \
+    echo export CGO_LDFLAGS=-L/mod/dbxml/lib -Wl,-rpath=/mod/dbxml/lib >> /mod/paqu/src/Makefile.cfg
+
 RUN make -C /mod/paqu/src all
 
 ADD corpustest.go /mod/tools/
