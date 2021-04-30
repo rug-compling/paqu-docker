@@ -51,7 +51,8 @@ RUN echo OPTS = -v                                                      > /mod/p
     echo GO = go                                                       >> /mod/paqu/src/Makefile.cfg && \
     echo export CGO_CFLAGS=-I/mod/dbxml/include                        >> /mod/paqu/src/Makefile.cfg && \
     echo export CGO_CXXFLAGS=-I/mod/dbxml/include                      >> /mod/paqu/src/Makefile.cfg && \
-    echo export CGO_LDFLAGS=-L/mod/dbxml/lib -Wl,-rpath=/mod/dbxml/lib >> /mod/paqu/src/Makefile.cfg
+    echo export CGO_LDFLAGS=-L/mod/dbxml/lib -Wl,-rpath=/mod/dbxml/lib >> /mod/paqu/src/Makefile.cfg && \
+    cp /mod/paqu/src/internal/dir/default.go.example /mod/paqu/src/internal/dir/default.go
 
 RUN make -C /mod/paqu/src all
 
