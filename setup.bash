@@ -424,8 +424,16 @@ else
 fi
 if [ "$os" = linux ]
 then
-    echo uid=`stat -c %u "$DATA/setup.toml"` >> paqu.bash
-    echo gid=`stat -c %g "$DATA/setup.toml"` >> paqu.bash
+    echo 'case "`docker info --format '\''{{.SecurityOptions}}'\''`" in' >> paqu.bash
+    echo '    *name=rootless*)' >> paqu.bash
+    echo '        user=""' >> paqu.bash
+    echo '        ;;' >> paqu.bash
+    echo '    *)' >> paqu.bash
+    echo "        uid=`stat -c %u \"$DATA/setup.toml\"`" >> paqu.bash
+    echo "        gid=`stat -c %g \"$DATA/setup.toml\"`" >> paqu.bash
+    echo '        user="--user=$uid:$gid"' >> paqu.bash
+    echo '        ;;' >> paqu.bash
+    echo 'esac' >> paqu.bash
 fi
 
 cat >> paqu.bash  <<'EOF'
@@ -492,7 +500,7 @@ EOF
     if [ "$os" = linux ]
     then
 	cat >> paqu.bash  <<'EOF'
-	    --user=$uid:$gid \
+	    $user \
 EOF
     fi
     cat >> paqu.bash  <<'EOF'
@@ -515,7 +523,7 @@ EOF
 if [ "$os" = linux ]
 then
     cat >> paqu.bash  <<'EOF'
-	    --user=$uid:$gid \
+	    $user \
 EOF
 fi
 cat >> paqu.bash  <<'EOF'
@@ -567,7 +575,7 @@ EOF
 if [ "$os" = linux ]
 then
     cat >> paqu.bash  <<'EOF'
-	    --user=$uid:$gid \
+	    $user \
 EOF
 fi
 cat >> paqu.bash  <<'EOF'
@@ -597,7 +605,7 @@ EOF
 if [ "$os" = linux ]
 then
     cat >> paqu.bash  <<'EOF'
-	    --user=$uid:$gid \
+	    $user \
 EOF
 fi
 cat >> paqu.bash  <<'EOF'
@@ -612,7 +620,7 @@ EOF
 if [ "$os" = linux ]
 then
     cat >> paqu.bash  <<'EOF'
-	    --user=$uid:$gid \
+	    $user \
 EOF
 fi
 cat >> paqu.bash  <<'EOF'
