@@ -77,3 +77,6 @@ CMD ["run"]
 
 ADD cdbdate /mod/corpora
 ADD cdbversion /mod/corpora
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
+  libsm6
