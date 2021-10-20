@@ -42,7 +42,7 @@ RUN rm /index && mkdir -p /mod && cd /mod && \
     curl -s http://www.let.rug.nl/alfa/docker/paqu/dbxml.tar.gz | tar --no-same-owner -vxzf -
 
 ADD https://github.com/rug-compling/paqu/commits/master.atom /master
-RUN cd /mod && git clone https://github.com/rug-compling/paqu && rm /master
+RUN cd /mod && git clone --depth 1 https://github.com/rug-compling/paqu && rm /master
 
 # Add libraries to standard path
 RUN ldconfig /mod/dbxml/lib /mod/Alpino/boost
