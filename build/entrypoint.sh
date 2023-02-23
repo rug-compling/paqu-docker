@@ -66,7 +66,7 @@ case "$1" in
 	then
 	    echo Het corpus Alpino Treebank wordt ingevoerd > message
 	    echo /mod/corpora/cdb.dact | \
-		pqbuild -D $(< /mod/corpora/cdbdate ) -w -p '/mod/corpora/' -m 'info: https://www.let.rug.nl/~vannoord/trees/' alpinotreebank 'Alpino Treebank' manual 1
+		pqbuild -D $(< /mod/corpora/cdbdate ) -w -p /mod/corpora/ -M /mod/corpora/cdb.md alpinotreebank 'Alpino Treebank' manual 1
 	    mkdir -p /mod/data/data/alpinotreebank
 	    cp /mod/corpora/cdb{date,version} /mod/data/data/alpinotreebank
 	fi
