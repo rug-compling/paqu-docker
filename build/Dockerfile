@@ -68,7 +68,7 @@ RUN chmod 555 /mod/etc/entrypoint.sh && \
     go build dbtest.go && \
     go build dbwait.go
 
-ENV LD_LIBRARY_PATH=/mod/Alpino/create_bin/extralibs/boost
+ENV LD_LIBRARY_PATH=/mod/Alpino/create_bin/extralibs/boost:/mod/Alpino/unix
 
 EXPOSE 9000
 
