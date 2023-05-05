@@ -556,8 +556,8 @@ cat >> paqu.bash  <<'EOF'
 	    echo
 	    echo Corpusbestand niet gevonden.
 	    echo
-	    echo Je kunt het corpus Lassy Klein verkrijgen bij de TST-Centrale:
-	    echo http://tst-centrale.org/nl/tst-materialen/corpora/lassy-klein-corpus-detail
+	    echo Je kunt het corpus Lassy Klein verkrijgen bij het INT:
+	    echo https://taalmaterialen.ivdnt.org/download/tstc-lassy-klein-corpus/
 	    echo
 	    echo Plaats het bestand lassy.dact in de directory \'$dir/corpora/\'
 	    echo en draai dit commando opnieuw.
@@ -587,8 +587,8 @@ cat >> paqu.bash  <<'EOF'
 	    echo
 	    echo Corpusbestand niet gevonden.
 	    echo
-	    echo Je kunt het corpus Lassy Klein verkrijgen bij de TST-Centrale:
-	    echo http://tst-centrale.org/nl/tst-materialen/corpora/lassy-klein-corpus-detail
+	    echo Je kunt het corpus Lassy Klein verkrijgen bij het INT:
+	    echo https://taalmaterialen.ivdnt.org/download/tstc-lassy-klein-corpus/
 	    echo
 	    echo Plaats het bestand lassy.dact in de directory \'$dir/corpora/\'
 	    echo en draai dit commando opnieuw.
