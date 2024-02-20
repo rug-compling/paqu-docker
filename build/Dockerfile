@@ -35,11 +35,11 @@ ENV PAQU /mod/data
 ENV ALPINO_HOME /mod/Alpino
 
 # Downloading the index triggers a new download of sources when anything in the index has changed
-ADD http://www.let.rug.nl/alfa/docker/paqu/ /index
+ADD https://www.let.rug.nl/alfa/docker/paqu/ /index
 RUN rm /index && mkdir -p /mod && cd /mod && \
-    curl -s http://www.let.rug.nl/alfa/docker/paqu/alpino.tar.gz | tar --no-same-owner -vxzf - && \
-    curl -s http://www.let.rug.nl/alfa/docker/paqu/corpora.tar.gz | tar --no-same-owner -vxzf - && \
-    curl -s http://www.let.rug.nl/alfa/docker/paqu/dbxml.tar.gz | tar --no-same-owner -vxzf -
+    curl -s https://www.let.rug.nl/alfa/docker/paqu/alpino.tar.gz | tar --no-same-owner -vxzf - && \
+    curl -s https://www.let.rug.nl/alfa/docker/paqu/corpora.tar.gz | tar --no-same-owner -vxzf - && \
+    curl -s https://www.let.rug.nl/alfa/docker/paqu/dbxml.tar.gz | tar --no-same-owner -vxzf -
 
 ADD https://github.com/rug-compling/paqu/commits/master.atom /master
 RUN cd /mod && git clone --depth 1 https://github.com/rug-compling/paqu && rm /master
