@@ -39,19 +39,20 @@ ADD https://www.let.rug.nl/alfa/docker/paqu/ /index
 RUN rm /index && mkdir -p /mod && cd /mod && \
     curl -s https://www.let.rug.nl/alfa/docker/paqu/alpino.tar.gz | tar --no-same-owner -vxzf - && \
     curl -s https://www.let.rug.nl/alfa/docker/paqu/corpora.tar.gz | tar --no-same-owner -vxzf - && \
+    cd / && \
     curl -s https://www.let.rug.nl/alfa/docker/paqu/dbxml.tar.gz | tar --no-same-owner -vxzf -
 
 ADD https://github.com/rug-compling/paqu/commits/master.atom /master
 RUN cd /mod && git clone --depth 1 https://github.com/rug-compling/paqu && rm /master
 
 # Add libraries to standard path
-RUN ldconfig /mod/dbxml/lib /mod/Alpino/boost
+RUN ldconfig /opt/dbxml2/lib /mod/Alpino/boost
 
-RUN echo OPTS = -v                                                      > /mod/paqu/src/Makefile.cfg && \
-    echo GO = go                                                       >> /mod/paqu/src/Makefile.cfg && \
-    echo export CGO_CFLAGS=-I/mod/dbxml/include                        >> /mod/paqu/src/Makefile.cfg && \
-    echo export CGO_CXXFLAGS=-I/mod/dbxml/include                      >> /mod/paqu/src/Makefile.cfg && \
-    echo export CGO_LDFLAGS=-L/mod/dbxml/lib -Wl,-rpath=/mod/dbxml/lib >> /mod/paqu/src/Makefile.cfg && \
+RUN echo OPTS = -v                                                        > /mod/paqu/src/Makefile.cfg && \
+    echo GO = go                                                         >> /mod/paqu/src/Makefile.cfg && \
+    echo export CGO_CFLAGS=-I/opt/dbxml2/include                         >> /mod/paqu/src/Makefile.cfg && \
+    echo export CGO_CXXFLAGS=-I/opt/dbxml2/include                       >> /mod/paqu/src/Makefile.cfg && \
+    echo export CGO_LDFLAGS=-L/opt/dbxml2/lib -Wl,-rpath=/opt/dbxml2/lib >> /mod/paqu/src/Makefile.cfg && \
     cp /mod/paqu/src/internal/dir/default.go.example /mod/paqu/src/internal/dir/default.go
 
 RUN make -C /mod/paqu/src all
