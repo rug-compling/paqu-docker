@@ -1,82 +1,31 @@
-#
-# PaQu in Docker
-#
-# To build and push to repository:
-#
-#     docker build -t registry.webhosting.rug.nl/compling/paqu:latest .
-#     docker push registry.webhosting.rug.nl/compling/paqu:latest
-#
 
 FROM ubuntu:bionic
 
 MAINTAINER Peter Kleiweg <p.c.j.kleiweg@rug.nl>
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-  ca-certificates \
-  curl \
-  flex \
-  g++ \
+RUN apt-get update && apt-get install -y tzdata && \
+    echo "Europe/Amsterdam" > /etc/timezone && \
+    rm -f /etc/localtime && \
+    ln -fs /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime && \
+    dpkg-reconfigure -f noninteractive tzdata
+
+RUN apt-get install -y \
+  build-essential \
   git \
-  golang-1.13-go \
-  less \
-  libcurl4 \
   libgraphviz-dev \
-  libtk8.6 \
   locales \
-  make \
-  nano \
-  python3-minimal \
-  vim
+  mc \
+  nano
 
 RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
-ENV PATH /mod/paqu/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/mod/Alpino/bin:/mod/Alpino/Tokenization:/usr/lib/go-1.13/bin
-ENV PAQU /mod/data
-ENV ALPINO_HOME /mod/Alpino
+ADD https://go.dev/dl/go1.22.0.linux-amd64.tar.gz /
+RUN cd / && tar vzxf go*tar.gz --no-same-owner && rm go*tar.gz
+ENV GOCACHE /cache/go/cache
+ENV GOPATH /cache/go
 
-# Downloading the index triggers a new download of sources when anything in the index has changed
-ADD https://www.let.rug.nl/alfa/docker/paqu/ /index
-RUN rm /index && mkdir -p /mod && cd /mod && \
-    curl -s https://www.let.rug.nl/alfa/docker/paqu/alpino.tar.gz | tar --no-same-owner -vxzf - && \
-    curl -s https://www.let.rug.nl/alfa/docker/paqu/corpora.tar.gz | tar --no-same-owner -vxzf - && \
-    cd / && \
-    curl -s https://www.let.rug.nl/alfa/docker/paqu/dbxml.tar.gz | tar --no-same-owner -vxzf -
+ENV PATH /opt/bin:/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-ADD https://github.com/rug-compling/paqu/commits/master.atom /master
-RUN cd /mod && git clone --depth 1 https://github.com/rug-compling/paqu && rm /master
+ADD init.sh /
 
-# Add libraries to standard path
-RUN ldconfig /opt/dbxml2/lib /mod/Alpino/boost
-
-RUN echo OPTS = -v                                                        > /mod/paqu/src/Makefile.cfg && \
-    echo GO = go                                                         >> /mod/paqu/src/Makefile.cfg && \
-    echo export CGO_CFLAGS=-I/opt/dbxml2/include                         >> /mod/paqu/src/Makefile.cfg && \
-    echo export CGO_CXXFLAGS=-I/opt/dbxml2/include                       >> /mod/paqu/src/Makefile.cfg && \
-    echo export CGO_LDFLAGS=-L/opt/dbxml2/lib -Wl,-rpath=/opt/dbxml2/lib >> /mod/paqu/src/Makefile.cfg && \
-    cp /mod/paqu/src/internal/dir/default.go.example /mod/paqu/src/internal/dir/default.go
-
-RUN make -C /mod/paqu/src all
-
-ADD corpustest.go /mod/tools/
-ADD dbtest.go /mod/tools/
-ADD dbwait.go /mod/tools/
-ADD init.sh /mod/etc/
-ADD entrypoint.sh /mod/etc
-RUN chmod 555 /mod/etc/entrypoint.sh && \
-    cd /mod/tools && \
-    cp /mod/paqu/src/go.* . && \
-    go build corpustest.go && \
-    go build dbtest.go && \
-    go build dbwait.go
-
-EXPOSE 9000
-
-ENTRYPOINT ["/mod/etc/entrypoint.sh"]
-CMD ["run"]
-
-ADD cdbdate /mod/corpora
-ADD cdbversion /mod/corpora
-ADD cdb.md /mod/corpora
-
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
-  libsm6
+CMD ["/bin/bash", "--rcfile", "/init.sh"]

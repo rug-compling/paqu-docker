@@ -12,6 +12,6 @@ alias rm='rm -i'
 alias mc='. /usr/share/mc/bin/mc-wrapper.sh'
 alias path='echo $PATH | perl -p -e "s/:/\n/g"'
 
-PS1='[docker:'"$(< /etc/issue.net)"'] \u:\w\$ '
-
-cd /opt
+PS1='[PaQu in Docker:'"$(< /etc/issue.net)"'] \u:\w\$ '
+HOME=/mod/data
+cd
