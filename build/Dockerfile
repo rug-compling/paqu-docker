@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y tzdata && \
 
 RUN apt-get install -y \
   build-essential \
+  flex \
   git \
   libgraphviz-dev \
   locales \

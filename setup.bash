@@ -5,15 +5,15 @@ script='
 $p = "";
 foreach $part (split m!/!, $ENV{dir}) {
     if ($part ne "") {
-	$p .= "/" . $part;
-	push @parts, $p;
+        $p .= "/" . $part;
+        push @parts, $p;
     }
 }
 foreach $p (@parts) {
     $s = `stat -c %A "$p"`;
     if ($s =~ /d(...){0,2}..-/) {
         print "$p";
-	exit;
+        exit;
     }
 }
 '
@@ -402,7 +402,7 @@ login = "$LOGIN"
 prefix = "pq"
 dact = true
 sh = "/bin/sh"
-path = "/mod/paqu/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+path = "/opt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 alpino = "/mod/Alpino"
 remote = false
 conllu = true
@@ -477,7 +477,7 @@ then
 EOF
     if [ $vagrant = yes ]
     then
-	cat >> paqu.bash  <<'EOF'
+        cat >> paqu.bash  <<'EOF'
 	    -e VAGRANT_OSX_MODE=true \
 	    -e DOCKER_USER_ID=$(id -u) \
 	    -e DOCKER_USER_GID=$(id -g) \
@@ -499,7 +499,7 @@ else
 EOF
     if [ "$os" = linux ]
     then
-	cat >> paqu.bash  <<'EOF'
+        cat >> paqu.bash  <<'EOF'
 	    $user \
 EOF
     fi

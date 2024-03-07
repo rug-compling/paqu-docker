@@ -313,7 +313,7 @@ ECHO login = "$LOGIN">> %out%
 ECHO prefix = "pq">> %out%
 ECHO dact = true>> %out%
 ECHO sh = "/bin/sh">> %out%
-ECHO path = "/mod/paqu/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin">> %out%
+ECHO path = "/opt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin">> %out%
 ECHO alpino = "/mod/Alpino">> %out%
 ECHO remote = false>> %out%
 ECHO conllu = true>> %out%
@@ -366,7 +366,7 @@ ECHO :EndLoop>> paqu.cmd
 ECHO IF EXIST "%%dir%%\fail" (>> paqu.cmd
 ECHO     TYPE "%%dir%%\message.err">> paqu.cmd
 ECHO     ECHO FOUT>> paqu.cmd
-ECHO )>> paqu.cmd 
+ECHO )>> paqu.cmd
 ECHO IF EXIST "%%dir%%\ok" (>> paqu.cmd
 ECHO     ECHO.>> paqu.cmd
 ECHO     ECHO PaQu is gestart op http://%%localhost%%:%%port%%/>> paqu.cmd

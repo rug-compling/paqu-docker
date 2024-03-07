@@ -28,16 +28,7 @@ shell:
 distclean:
 	if [ -d work/cache/go ]; then chmod -cR u+w work/cache/go; fi
 	rm -fr \
-		alpino \
-		alpino-in-docker/build/Alpino.tar.gz \
-		alpino-in-docker/build/opt/alpinocorpus? \
-		alpino-in-docker/build/opt/bin/alto* \
-		alpino-in-docker/build/opt/bin/alud* \
-		alpino-in-docker/build/opt/dact? \
-		alpino-in-docker/build/opt/dbxml? \
-		alpino-in-docker/build/opt/lib/XlibNoSHM.so \
-		alpino-in-docker/build/opt/lib/alpinoviewer.bin \
-		alpino-in-docker/build/opt/man/man1/alto.1 \
+		paqu-in-docker/build/opt \
 		work
 
 step0:	## deze repo bijwerken
@@ -75,9 +66,11 @@ step4:	step1 ## installeer extra binary's
 		localhost/paqu-devel:latest \
 		make -C /src
 
-step5:	step1 paqu-in-docker/build/alpino.tar.gz  ## zet Alpino klaar
+step5:	paqu-in-docker/build/alpino.tar.gz  ## zet Alpino klaar
 
-step8:	step3 step4 step5 ## maak image van PaQu in Docker
+step6:	paqu-in-docker/build/corpora.tar.gz  ## zet corpora klaar
+
+step8:	step3 step4 step5 step6 ## maak image van PaQu in Docker
 	cd paqu-in-docker/build && ./build.sh
 
 step9:	step8 ## push image van PaQu in Docker naar de server
@@ -108,3 +101,6 @@ paqu-in-docker/build/alpino.tar.gz: $(ALPINO_TGZ)
 	mv tmp.tgz $@
 	rm -fr Alpino
 
+paqu-in-docker/build/corpora.tar.gz:
+	@echo zelf doen: $@
+	@false
