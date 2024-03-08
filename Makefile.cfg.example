@@ -3,4 +3,4 @@
 # Alpino moet gecompileerd zijn op een platform dat niet nieuwer is
 # dan waar PaQu in Docker op wordt gecompileerd.
 ALPINO_TGZ = /my/docker/alpino/alpino-in-docker/build/Alpino.tar.gz
-
+CDB_TGZ = data/cdb.tar.gz

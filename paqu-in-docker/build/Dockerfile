@@ -28,12 +28,12 @@ ENV PATH /opt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/
 ENV PAQU /mod/data
 ENV ALPINO_HOME /mod/Alpino
 
-ADD corpora.tar.gz /mod
 ADD alpino.tar.gz /mod
 ADD init.sh entrypoint.sh /mod/etc/
-ADD cdbdate cdbversion cdb.md /mod/corpora
 ADD /opt/bin /opt/bin
 ADD /opt/dbxml2/lib /opt/dbxml2/lib
+RUN mkdir -p /mod/corpora
+ADD cdb.dact cdb.dactx cdbdate cdbversion cdb.md /mod/corpora
 
 # compatibility oude versie
 RUN mkdir -p /mod/paqu && \

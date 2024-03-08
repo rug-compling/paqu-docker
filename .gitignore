@@ -1,4 +1,6 @@
-Makefile.cfg
-paqu.bash
-paqu.cmd
-work
+/Makefile.cfg
+/cdb
+/data
+/paqu.bash
+/paqu.cmd
+/work

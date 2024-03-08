@@ -56,7 +56,7 @@ step3:	step2 ## installeer PaQu
 		localhost/paqu-devel:latest \
 		/scripts/install-paqu.sh
 
-step4:	step1 ## installeer extra binary's
+step4:	step2 ## installeer extra binary's
 	docker run $(DOCKERARGS) --rm -i -t \
 		-v $(PWD)/paqu-in-docker/build/opt:/opt \
 		-v $(PWD)/scripts:/scripts \
@@ -68,7 +68,7 @@ step4:	step1 ## installeer extra binary's
 
 step5:	paqu-in-docker/build/alpino.tar.gz  ## zet Alpino klaar
 
-step6:	paqu-in-docker/build/corpora.tar.gz  ## zet corpora klaar
+step6:	step3 step4 paqu-in-docker/build/cdb.dactx  ## zet corpora klaar
 
 step8:	step3 step4 step5 step6 ## maak image van PaQu in Docker
 	cd paqu-in-docker/build && ./build.sh
@@ -101,6 +101,29 @@ paqu-in-docker/build/alpino.tar.gz: $(ALPINO_TGZ)
 	mv tmp.tgz $@
 	rm -fr Alpino
 
-paqu-in-docker/build/corpora.tar.gz:
-	@echo zelf doen: $@
-	@false
+paqu-in-docker/build/cdb.dactx: paqu-in-docker/build/cdb.dact
+	rm -f $@.tmp
+	docker run $(DOCKERARGS) --rm -i -t \
+		-v $(PWD)/paqu-in-docker/build/opt:/opt \
+		-v $(PWD)/paqu-in-docker/build:/tmp \
+		localhost/paqu-devel:latest \
+		/opt/bin/pqdactx /tmp/cdb.dact /tmp/cdb.dactx.tmp
+	mv $@.tmp $@
+
+paqu-in-docker/build/cdb.dact: $(CDB_TGZ)
+	@echo
+	@echo -e '\e[1mNieuwste versie hier te downloaden:\e[0m'
+	@echo -e '\e[1mhttps://www.let.rug.nl/vannoord/treebanks/\e[0m'
+	@echo
+	rm -fr cdb
+	tar xzf $(CDB_TGZ)
+	date -r `ls -t cdb/*.xml | head -n 1` +%Y-%m-%d > paqu-in-docker/build/cdbdate
+	cp paqu-in-docker/build/cdbdate paqu-in-docker/build/cdbversion
+	docker run $(DOCKERARGS) --rm -i -t \
+		-v $(PWD)/cdb:/tmp \
+		-v $(PWD)/paqu-in-docker/build:/build \
+		-v $(PWD)/paqu-in-docker/build/opt:/opt \
+		-v $(PWD)/scripts:/scripts \
+		localhost/paqu-devel:latest \
+		/scripts/install-cdb.sh
+	rm -fr cdb

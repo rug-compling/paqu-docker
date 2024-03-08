@@ -40,4 +40,5 @@ Verder zijn de volgende attributen automatisch gegenereerd:
 
 Meer informatie: https://www.let.rug.nl/~vannoord/trees/
 
-Laatste versie beschikbaar via: https://github.com/rug-compling/Alpino
+Laatste versie beschikbaar via: https://www.let.rug.nl/vannoord/treebanks/
+
