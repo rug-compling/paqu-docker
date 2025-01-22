@@ -113,7 +113,7 @@ paqu-in-docker/build/cdb.dactx: paqu-in-docker/build/cdb.dact
 paqu-in-docker/build/cdb.dact: $(CDB_TGZ)
 	@echo
 	@echo -e '\e[1mNieuwste versie hier te downloaden:\e[0m'
-	@echo -e '\e[1mhttps://www.let.rug.nl/vannoord/treebanks/\e[0m'
+	@echo https://www.let.rug.nl/vannoord/treebanks/
 	@echo
 	rm -fr cdb
 	tar xzf $(CDB_TGZ)

@@ -1,7 +1,7 @@
 
 FROM ubuntu:bionic
 
-MAINTAINER Peter Kleiweg <p.c.j.kleiweg@rug.nl>
+LABEL org.opencontainers.image.authors="Peter Kleiweg <p.c.j.kleiweg@rug.nl>"
 
 RUN apt-get update && apt-get install -y tzdata && \
     echo "Europe/Amsterdam" > /etc/timezone && \
@@ -22,10 +22,10 @@ RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
 ADD https://go.dev/dl/go1.22.0.linux-amd64.tar.gz /
 RUN cd / && tar vzxf go*tar.gz --no-same-owner && rm go*tar.gz
-ENV GOCACHE /cache/go/cache
-ENV GOPATH /cache/go
+ENV GOCACHE=/cache/go/cache
+ENV GOPATH=/cache/go
 
-ENV PATH /opt/bin:/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ENV PATH=/opt/bin:/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 ADD init.sh /
 

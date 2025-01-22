@@ -9,7 +9,7 @@
 
 FROM ubuntu:bionic
 
-MAINTAINER Peter Kleiweg <p.c.j.kleiweg@rug.nl>
+LABEL org.opencontainers.image.authors="Peter Kleiweg <p.c.j.kleiweg@rug.nl>"
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     curl \
@@ -24,9 +24,9 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 
 RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
-ENV PATH /opt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/mod/Alpino/bin:/mod/Alpino/Tokenization
-ENV PAQU /mod/data
-ENV ALPINO_HOME /mod/Alpino
+ENV PATH=/opt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/mod/Alpino/bin:/mod/Alpino/Tokenization
+ENV PAQU=/mod/data
+ENV ALPINO_HOME=/mod/Alpino
 
 ADD alpino.tar.gz /mod
 ADD init.sh entrypoint.sh /mod/etc/
