@@ -15,6 +15,10 @@ endif
 help:
 	@echo Beschikbare targets voor make:
 	@egrep -h '\s##\s' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[34m%-8s\033[0m %s\n", $$1, $$2}'
+	@echo
+	@echo -e '\e[1mDownload eerst nieuwste versie van' $(CDB_TGZ) 'hier:\e[0m'
+	@echo https://www.let.rug.nl/vannoord/treebanks/
+	@echo
 
 shell:
 	docker run $(DOCKERARGS) --rm -i -t \
