@@ -7,7 +7,7 @@
 #     docker push registry.webhosting.rug.nl/compling/paqu:latest
 #
 
-FROM ubuntu:bionic
+FROM ubuntu:jammy
 
 LABEL org.opencontainers.image.authors="Peter Kleiweg <p.c.j.kleiweg@rug.nl>"
 
