@@ -1,0 +1,8 @@
+github.com/BurntSushi/toml v1.3.2 h1:o7IhLm0Msx3BaB+n3Ag7L8EVlByGnpq14C4YWiu/gL8=
+github.com/BurntSushi/toml v1.3.2/go.mod h1:CxXYINrC8qIiEnFrOxCa7Jy5BFHlXnUU2pbicEuybxQ=
+github.com/go-sql-driver/mysql v1.7.1 h1:lUIinVbN1DY0xBg0eMOzmmtGoHwWBbvnWubQUrtU8EI=
+github.com/go-sql-driver/mysql v1.7.1/go.mod h1:OXbVy3sEdcQ2Doequ6Z5BW6fXNQTmx+9S1MCJN5yJMI=
+github.com/pebbe/dbxml v1.3.1 h1:36vm7gj4e4rYic6TaHT3MCt9EjaIJPqSjJGARSAjjxc=
+github.com/pebbe/dbxml v1.3.1/go.mod h1:g5Nu8pQcuIsuZveVYYZmqgya//k4SLbtVhnZ6DDuyN4=
+github.com/pebbe/util v0.9.0 h1:PMZd+CpWb8GbWEmFGlL3qd6XPuywl6xFIbrXWi870OA=
+github.com/pebbe/util v0.9.0/go.mod h1:ynWl/SFX4+Seb9fpjVlYevr1f4TP7FrCmyZHiBCg69Q=
