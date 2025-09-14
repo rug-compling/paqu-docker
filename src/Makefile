@@ -9,7 +9,7 @@ all: \
 	CGO_CFLAGS=-I/opt/dbxml2/include \
 	CGO_CXXFLAGS=-I/opt/dbxml2/include \
 	CGO_LDFLAGS='-L/opt/dbxml2/lib -Wl,-rpath=/opt/dbxml2/lib' \
-	/go/bin/go build -o $@ $<
+	go build -o $@ $<
 
 go.mod: *.go
 	rm -f go.mod go.sum

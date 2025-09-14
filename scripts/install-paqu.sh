@@ -28,7 +28,7 @@ cd src
 
 cat <<EOT > Makefile.cfg
 OPTS = -v
-GO = /go/bin/go
+GO = go
 export CGO_CFLAGS=-I/opt/dbxml2/include
 export CGO_CXXFLAGS=-I/opt/dbxml2/include
 export CGO_LDFLAGS=-L/opt/dbxml2/lib -Wl,-rpath=/opt/dbxml2/lib
