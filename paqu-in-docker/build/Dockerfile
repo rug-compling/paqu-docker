@@ -29,7 +29,7 @@ ENV PAQU=/mod/data
 ENV ALPINO_HOME=/mod/Alpino
 
 COPY alpino.tar.gz /
-RUN mkdir /mod && cd /mod && tar --no-same-owner vxzf ../alpino.tar.gz && rm ../alpino.tar.gz
+RUN mkdir /mod && cd /mod && tar vxzf ../alpino.tar.gz --no-same-owner && rm ../alpino.tar.gz
 ADD init.sh entrypoint.sh /mod/etc/
 ADD /opt/bin /opt/bin
 ADD /opt/dbxml2/lib /opt/dbxml2/lib
